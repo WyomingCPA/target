@@ -356,7 +356,7 @@ return [
         ['header' => 'Проекты'],
         [
             'text' => 'Проекты',
-            'url' => 'admin/settings',
+            'url' => 'project',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
