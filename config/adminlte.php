@@ -372,7 +372,7 @@ return [
         ['header' => 'Задачи'],
         [
             'text' => 'Задачи',
-            'url' => 'admin/settings',
+            'url' => 'task',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
@@ -383,7 +383,7 @@ return [
         ['header' => 'Идеи'],
         [
             'text' => 'Идеи',
-            'url' => 'admin/settings',
+            'url' => 'idea',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
