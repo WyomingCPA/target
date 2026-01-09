@@ -425,7 +425,7 @@ return [
         ['header' => 'AI Идеи'],
         [
             'text' => 'Промты',
-            'url' => 'admin/settings',
+            'url' => 'prompt',
             'icon' => 'fas fa-fw fa-user',
         ],
         [

@@ -10,6 +10,7 @@ use App\Http\Controllers\goal\GoalController;
 use App\Http\Controllers\project\ProjectController;
 use App\Http\Controllers\task\TaskController;
 use App\Http\Controllers\idea\IdeaController;
+use App\Http\Controllers\prompt\PromptController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -66,3 +67,12 @@ Route::group(['prefix' => 'idea', 'middleware' => 'auth',], function () {
     Route::post('/update/{id}', [IdeaController::class, 'update'])->name('idea.update');
 });
 
+Route::group(['prefix' => 'prompt', 'middleware' => 'auth',], function () {
+    Route::get('', [PromptController::class, 'index'])->name('prompt.main');
+    Route::get('create', [PromptController::class, 'create'])->name('prompt.create');
+    Route::get('show', [PromptController::class, 'show'])->name('prompt.show');
+    Route::post('store', [PromptController::class, 'store'])->name('prompt.store');
+    Route::get('/edit/{id}', [PromptController::class, 'edit'])->name('prompt.edit');
+    Route::post('delete/{id}', [PromptController::class, 'delete'])->name('prompt.delete');
+    Route::post('/update/{id}', [PromptController::class, 'update'])->name('prompt.update');
+});
