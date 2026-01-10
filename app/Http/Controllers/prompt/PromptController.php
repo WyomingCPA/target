@@ -40,4 +40,31 @@ class PromptController extends Controller
         return redirect()->route('prompt.main')
             ->with('success', 'Промт добавлен');
     }
+
+    public function update(Request $request, $id)
+    {
+        $prompt = Prompt::findOrFail($id);
+
+        $prompt->update([
+            'title'    => $request->input('title'),
+            'content'  => $request->input('content'),
+            'category' => $request->input('category'),
+        ]);
+
+        return redirect()->route('prompt.main');
+    }
+
+    public function edit($id)
+    {
+        $prompt = Prompt::findOrFail($id);
+        return view('prompt.edit', compact('prompt'));
+    }
+
+    public function delete($id)
+    {
+        Prompt::findOrFail($id)->delete();
+
+        return redirect()->route('prompt.main')
+            ->with('success', 'Промт удалён');
+    }
 }
