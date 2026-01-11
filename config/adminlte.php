@@ -414,7 +414,7 @@ return [
         ],
         [
             'text' => 'Генератор задач',
-            'url' => 'admin/settings',
+            'url' => 'task/templates',
             'icon' => 'fas fa-fw fa-user',
         ],
         [

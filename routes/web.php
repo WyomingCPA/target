@@ -10,6 +10,7 @@ use App\Http\Controllers\goal\GoalController;
 use App\Http\Controllers\project\ProjectController;
 use App\Http\Controllers\task\TaskController;
 use App\Http\Controllers\task\CompletedTaskController;
+use App\Http\Controllers\task\TaskGeneratorController;
 use App\Http\Controllers\idea\IdeaController;
 use App\Http\Controllers\prompt\PromptController;
 
@@ -61,6 +62,9 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::post('/update/{id}', [TaskController::class, 'update'])->name('task.update');
     Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggleStatus'])->name('task.toggle');
     Route::get('completed', [CompletedTaskController::class, 'index'])->name('task.completed');
+    Route::post('generate', [TaskGeneratorController::class, 'store'])->name('task.generate');
+    Route::get('templates', [TaskGeneratorController::class, 'index'])->name('tasks.templates.index');
+
 });
 Route::group(['prefix' => 'idea', 'middleware' => 'auth',], function () {
     Route::get('', [IdeaController::class, 'index'])->name('idea.main');
