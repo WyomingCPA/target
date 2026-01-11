@@ -5,6 +5,7 @@
 @section('content_header')
 
 @section('content')
+
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">
@@ -30,6 +31,8 @@
                     <th>Проект</th>
                     <th>Статус</th>
                     <th>Приоритет</th>
+                    <th>Подзадачи</th>
+                    <th>Прогресс</th>
                     <th>Дедлайн</th>
                     <th style="width:160px">Action</th>
                 </tr>
@@ -37,6 +40,12 @@
 
             <tbody>
                 @foreach($tasks as $task)
+                @php
+                $total = $task->subtasks_count;
+                $done = $task->done_subtasks_count;
+                $progress = $total > 0 ? round($done / $total * 100) : 0;
+                @endphp
+
                 <tr>
 
                     <td>{{ $task->id }}</td>
@@ -73,12 +82,38 @@
                         <span class="badge badge-secondary">Low</span>
                         @endif
                     </td>
-
+                    <td>
+                        @if($task->subtasks_count > 0)
+                        <span class="badge badge-info">
+                            {{ $task->subtasks_count }} подзадач
+                        </span>
+                        @else
+                        <span class="text-muted">—</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if($total > 0)
+                        <div class="progress progress-xs">
+                            <div class="progress-bar
+        {{ $progress == 100 ? 'bg-success' : 'bg-info' }}"
+                                style="width: {{ $progress }}%">
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            {{ $done }} / {{ $total }} ({{ $progress }}%)
+                        </small>
+                        @else
+                        <small class="text-muted">—</small>
+                        @endif
+                    </td>
                     <td>
                         {{ $task->due_date ?? '—' }}
                     </td>
 
                     <td>
+                        <a href="{{ route('task.show', $task->id) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i>
+                        </a>
                         <a href="{{ route('task.edit', $task->id) }}" class="btn btn-sm btn-primary">
                             <i class="fas fa-pen"></i>
                         </a>

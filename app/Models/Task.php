@@ -8,6 +8,7 @@ class Task extends Model
 {
     protected $fillable = [
         'project_id',
+        'parent_id',
         'title',
         'description',
         'type',
@@ -25,8 +26,15 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
+    // Подзадачи
     public function subtasks()
     {
-        return $this->hasMany(Subtask::class);
+        return $this->hasMany(Task::class, 'parent_id');
+    }
+
+    // Родительская задача
+    public function parent()
+    {
+        return $this->belongsTo(Task::class, 'parent_id');
     }
 }

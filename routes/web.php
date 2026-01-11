@@ -51,11 +51,14 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth',], function () {
 Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::get('', [TaskController::class, 'index'])->name('task.main');
     Route::get('create', [TaskController::class, 'create'])->name('task.create');
-    Route::get('show', [TaskController::class, 'show'])->name('task.show');
+    Route::get('show/{id}', [TaskController::class, 'show'])->name('task.show');
     Route::post('store', [TaskController::class, 'store'])->name('task.store');
+    Route::post('store-parent', [TaskController::class, 'parentTaskStore'])->name('task.store-parent');
     Route::get('/edit/{id}', [TaskController::class, 'edit'])->name('task.edit');
     Route::post('delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
     Route::post('/update/{id}', [TaskController::class, 'update'])->name('task.update');
+    Route::post('/update/{id}', [TaskController::class, 'update'])->name('task.update');
+    Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggleStatus'])->name('task.toggle');
 });
 Route::group(['prefix' => 'idea', 'middleware' => 'auth',], function () {
     Route::get('', [IdeaController::class, 'index'])->name('idea.main');

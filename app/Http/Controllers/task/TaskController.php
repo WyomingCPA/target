@@ -12,7 +12,13 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::with('project')
+        $tasks = Task::with('project')->withCount([
+            'subtasks',
+            'subtasks as done_subtasks_count' => function ($q) {
+                $q->where('status', 'done');
+            }
+        ])
+            ->whereNull('parent_id')
             ->orderBy('status')
             ->orderByDesc('priority')
             ->get();
@@ -52,6 +58,18 @@ class TaskController extends Controller
 
         return redirect()->route('task.main')
             ->with('success', 'Задача добавлена');
+    }
+    public function parentTaskStore(Request $request)
+    {
+        $parentTask = Task::findOrFail($request->input('parent_id'));
+
+        $subtask = $parentTask->subtasks()->create([
+            'title'    => $request->input('title'),
+            'status'   => 'todo',
+            'priority' => 3,
+        ]);
+
+        return back();
     }
     public function edit(Request $request, $id)
     {
@@ -100,5 +118,33 @@ class TaskController extends Controller
     {
         Task::findOrFail($id)->delete();
         return back()->with('success', 'Удалено');
+    }
+    public function show(Request $request, $id)
+    {
+        $task = Task::with([
+            'subtasks' => function ($q) {
+                $q->orderBy('created_at');
+            },
+            'project'
+        ])->findOrFail($id);
+
+        $total = $task->subtasks->count();
+        $done  = $task->subtasks->where('status', 'done')->count();
+
+        $progress = $total > 0 ? round(($done / $total) * 100) : 0;
+
+        return view('task.show', compact(
+            'task',
+            'progress',
+            'done',
+            'total'
+        ));
+    }
+    public function toggleStatus(Task $task)
+    {
+        $task->status = $task->status === 'done' ? 'todo' : 'done';
+        $task->save();
+
+        return back();
     }
 }
