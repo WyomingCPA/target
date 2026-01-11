@@ -102,6 +102,13 @@ class TaskController extends Controller
         // save
         $task = Task::findOrFail($id);
 
+        if ($request->status === 'done') {
+            $task->completed_at = now();
+        } else {
+            $task->completed_at = null;
+        }
+
+        $task->status = $request->status;
         $task->title       = $title;
         $task->description = $description;
         $task->project_id  = $project_id ?: null;

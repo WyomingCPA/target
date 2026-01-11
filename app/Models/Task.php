@@ -15,10 +15,12 @@ class Task extends Model
         'status',
         'priority',
         'due_date',
+        'completed_at'
     ];
 
     protected $casts = [
         'due_date' => 'date',
+        'completed_at' => 'datetime',
     ];
 
     public function project()
@@ -36,5 +38,11 @@ class Task extends Model
     public function parent()
     {
         return $this->belongsTo(Task::class, 'parent_id');
+    }
+    public function scopeCompleted($query)
+    {
+        return $query
+            ->where('status', 'done')
+            ->whereNull('parent_id'); // ⛔ не подзадачи
     }
 }

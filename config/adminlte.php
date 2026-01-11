@@ -376,8 +376,8 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
-            'text' => 'Все задачи',
-            'url' => 'admin/settings',
+            'text' => 'Завершенные задачи',
+            'url' => 'task/completed',
             'icon' => 'fas fa-fw fa-user',
         ],
         ['header' => 'Идеи'],
