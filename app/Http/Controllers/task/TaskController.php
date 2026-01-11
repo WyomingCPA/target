@@ -17,7 +17,7 @@ class TaskController extends Controller
             'subtasks as done_subtasks_count' => function ($q) {
                 $q->where('status', 'done');
             }
-        ])
+        ])->where('status', '!=', 'done')
             ->whereNull('parent_id')
             ->orderBy('status')
             ->orderByDesc('priority')
