@@ -329,7 +329,7 @@ return [
         ],
         [
             'text' => 'Сводка',
-            'url' => 'admin/settings',
+            'url' => 'dashboard/metric',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
@@ -409,7 +409,7 @@ return [
         ],
         [
             'text' => 'Шаблоны проектов',
-            'url' => 'admin/settings',
+            'url' => 'task/templates',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
