@@ -11,6 +11,7 @@ use App\Http\Controllers\project\ProjectController;
 use App\Http\Controllers\task\TaskController;
 use App\Http\Controllers\task\CompletedTaskController;
 use App\Http\Controllers\task\TaskGeneratorController;
+use App\Http\Controllers\task\TaskDecompositionController;
 use App\Http\Controllers\idea\IdeaController;
 use App\Http\Controllers\prompt\PromptController;
 
@@ -65,7 +66,8 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::get('completed', [CompletedTaskController::class, 'index'])->name('task.completed');
     Route::post('generate', [TaskGeneratorController::class, 'store'])->name('task.generate');
     Route::get('templates', [TaskGeneratorController::class, 'index'])->name('tasks.templates.index');
-
+    Route::post('decompose', [TaskDecompositionController::class, 'store'])->name('task.decompose');
+    Route::get('decompose/create', [TaskDecompositionController::class, 'create'])->name('task.decompose.create');
 });
 Route::group(['prefix' => 'idea', 'middleware' => 'auth',], function () {
     Route::get('', [IdeaController::class, 'index'])->name('idea.main');
