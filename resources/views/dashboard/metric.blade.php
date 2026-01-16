@@ -78,19 +78,51 @@
 
     <div class="card-body p-0">
         <ul class="list-group list-group-flush">
+
             @foreach(
-            \App\Models\Task::whereNull('parent_id')
+            \App\Models\Task::with(['project', 'subtasks'])
+            ->whereNull('parent_id')
             ->whereIn('status', ['todo','in_progress'])
-            ->limit(5)->get()
+            ->limit(10)
+            ->get()
             as $task
             )
-            <li class="list-group-item d-flex justify-content-between">
-                {{ $task->title }}
-                <span class="badge bg-secondary">
-                    {{ ucfirst($task->status) }}
-                </span>
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                <div>
+                    <strong>{{ $task->title }}</strong>
+
+                    <div class="text-muted small">
+                        @if($task->project)
+                        📁 {{ $task->project->title }}
+                        @else
+                        📁 Без проекта
+                        @endif
+
+                        • 🧩 {{ $task->subtasks->count() }} подзадач
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+
+                    <span class="badge bg-secondary">
+                        {{ ucfirst($task->status) }}
+                    </span>
+
+                    <a href="{{ route('task.edit', $task->id) }}"
+                        class="btn btn-sm btn-outline-warning"
+                        title="Редактировать">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{{ route('task.show', $task->id) }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </div>
             </li>
+
             @endforeach
+
         </ul>
     </div>
 </div>

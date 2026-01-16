@@ -39,8 +39,7 @@ class DashboardController extends Controller
         //Выполненные за день
         $completed = Task::whereDate('completed_at', today())->count();
         $balance = $completed - $created;
-        $completionRatio = $created > 0 ? round($completed / $created * 100)
-            : 100;
+        $completionRatio = $created > 0 ? round($completed / $created * 100) : 100;
 
         //Статистика за неделю
 

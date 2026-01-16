@@ -150,6 +150,11 @@ class TaskController extends Controller
     public function toggleStatus(Task $task)
     {
         $task->status = $task->status === 'done' ? 'todo' : 'done';
+        if ($task->status === 'done') {
+            $task->completed_at = now();
+        } else {
+            $task->completed_at = null;
+        }
         $task->save();
 
         return back();
