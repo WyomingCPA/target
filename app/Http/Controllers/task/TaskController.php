@@ -154,4 +154,24 @@ class TaskController extends Controller
 
         return back();
     }
+    public function editSubtask(Task $task)
+    {
+        // Проверяем, что это подзадача
+        // Не обязательно, но удобно для UI
+        $isSubtask = $task->parent_id !== null;
+
+        return view('task.subtask.edit', compact('task', 'isSubtask'));
+    }
+    public function updateSubtask(Request $request, Task $task)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+        ]);
+
+        $task->update([
+            'title' => $request->input('title'),
+        ]);
+
+        return redirect()->back()->with('success', 'Подзадача обновлена');
+    }
 }

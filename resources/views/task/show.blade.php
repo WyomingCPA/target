@@ -62,21 +62,45 @@
             </div>
         </form>
         @foreach($task->subtasks as $subtask)
-        <form method="POST"
-            action="{{ route('task.toggle', $subtask->id) }}"
-            style="display:inline">
-            @csrf
-            <div class="form-check">
-                <input class="form-check-input"
-                    type="checkbox"
+        <div class="d-flex align-items-center justify-content-between mb-2">
+
+            {{-- Toggle --}}
+            <form method="POST"
+                action="{{ route('task.toggle', $subtask->id) }}">
+                @csrf
+                <input type="checkbox"
                     onchange="this.form.submit()"
                     {{ $subtask->status === 'done' ? 'checked' : '' }}>
+            </form>
 
-                <label class="form-check-label">
-                    {{ $subtask->title }}
-                </label>
+            {{-- Title --}}
+            <span class="flex-grow-1 ml-2
+        {{ $subtask->status === 'done' ? 'text-muted text-decoration-line-through' : '' }}">
+                {{ $subtask->title }}
+            </span>
+
+            {{-- Actions --}}
+            <div class="btn-group btn-group-sm ml-2">
+
+                {{-- Edit --}}
+                <a href="{{ route('subtask.edit', $subtask->id) }}"
+                    class="btn btn-warning"
+                    title="Редактировать">
+                    <i class="fas fa-edit"></i>
+                </a>
+
+                {{-- Delete --}}
+                <form method="POST"
+                    action="{{ route('task.delete', $subtask->id) }}"
+                    onsubmit="return confirm('Удалить подзадачу?')">
+                    @csrf
+                    <button class="btn btn-danger" title="Удалить">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+
             </div>
-        </form>
+        </div>
         @endforeach
 
     </div>

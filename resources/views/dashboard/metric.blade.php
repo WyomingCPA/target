@@ -306,7 +306,7 @@
             <div class="card-body">
                 @if($completionRatioWeek < 50)
                     <div class="alert alert-danger">
-                    ⚠️ Перегруз. Сегодня добавлено больше, чем выполнено.
+                    ⚠️ Перегруз. За неделю добавлено больше, чем выполнено.
             </div>
             @elseif($completionRatioWeek < 80)
                 <div class="alert alert-warning">
