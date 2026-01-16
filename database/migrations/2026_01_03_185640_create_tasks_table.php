@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('type')->default('feature'); // feature, bug, refactor, idea
             $table->string('status')->default('todo'); // todo, doing, done
+            $table->timestamp('completed_at')->nullable();
             $table->unsignedTinyInteger('priority')->default(3);
             $table->date('due_date')->nullable();
             $table->timestamps();

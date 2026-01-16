@@ -61,7 +61,6 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::get('/edit/{id}', [TaskController::class, 'edit'])->name('task.edit');
     Route::post('delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
     Route::post('/update/{id}', [TaskController::class, 'update'])->name('task.update');
-    Route::post('/update/{id}', [TaskController::class, 'update'])->name('task.update');
     Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggleStatus'])->name('task.toggle');
     Route::get('completed', [CompletedTaskController::class, 'index'])->name('task.completed');
     Route::post('generate', [TaskGeneratorController::class, 'store'])->name('task.generate');
