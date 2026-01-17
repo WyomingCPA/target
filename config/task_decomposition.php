@@ -14,6 +14,28 @@ return [
             ['title' => 'Завершение', 'priority' => 3],
         ],
     ],
+    'memorization' => [
+        'label' => 'Длинный учебный блок (45 мин)',
+        'main' => [
+            'priority' => 2,
+        ],
+        'subtasks' => [
+            ['title' => 'Чтение/исследование по теме 15 минут', 'priority' => 1],
+            ['title' => 'Чтение/исследование по теме 15 минут', 'priority' => 1],
+            ['title' => 'Выписать термины для повторения', 'priority' => 2],
+            ['title' => 'Зубрить основное по теме 15 минут', 'priority' => 2],
+        ],
+    ],
+    'expres_learn' => [
+        'label' => 'экспресс-изучение (20 мин)',
+        'main' => [
+            'priority' => 2,
+        ],
+        'subtasks' => [
+            ['title' => 'Чтение по теме 15 минут', 'priority' => 1],
+            ['title' => 'Зубрение основного 5 минут', 'priority' => 2],
+        ],
+    ],
 
     'laravel_feature' => [
         'label' => 'Фича Laravel',
