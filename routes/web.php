@@ -70,7 +70,10 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
 
     Route::get('/subtask/{task}/edit', [TaskController::class, 'editSubtask'])->name('subtask.edit');
     Route::post('/subtask/{task}', [TaskController::class, 'updateSubtask'])->name('subtask.update');
+    Route::post('/subtask/{task}/promote', [TaskController::class, 'promoteToTask'])->name('subtask.promote');
+    Route::post('/subtasks/{task}/copy', [TaskController::class, 'copySubtask'])->name('subtask.copy');
 });
+
 Route::group(['prefix' => 'idea', 'middleware' => 'auth',], function () {
     Route::get('', [IdeaController::class, 'index'])->name('idea.main');
     Route::get('create', [IdeaController::class, 'create'])->name('idea.create');

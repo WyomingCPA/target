@@ -130,7 +130,7 @@ class TaskController extends Controller
     {
         $task = Task::with([
             'subtasks' => function ($q) {
-                $q->orderBy('created_at');
+                $q->orderBy('created_at', 'desc');
             },
             'project'
         ])->findOrFail($id);
@@ -178,5 +178,40 @@ class TaskController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Подзадача обновлена');
+    }
+    public function promoteToTask(Task $task)
+    {
+        // защита
+        if ($task->parent_id === null) {
+            abort(400, 'Это уже задача');
+        }
+
+        $task->update([
+            'parent_id'  => null,
+            'project_id' => $task->parent?->project_id,
+            'status'     => 'todo',
+        ]);
+
+        return redirect()
+            ->route('task.show', $task->id)
+            ->with('success', 'Подзадача стала задачей проекта');
+    }
+    public function copySubtask(Task $task)
+    {
+        // защита: копируем только подзадачи
+        if ($task->parent_id === null) {
+            abort(400, 'Это не подзадача');
+        }
+
+        Task::create([
+            'title'       => $task->title,
+            'description' => $task->description,
+            'parent_id'   => $task->parent_id,
+            'project_id'  => $task->project_id,
+            'status'      => 'todo',
+            'priority'    => $task->priority,
+        ]);
+
+        return back()->with('success', 'Подзадача скопирована');
     }
 }

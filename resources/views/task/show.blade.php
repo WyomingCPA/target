@@ -88,7 +88,23 @@
                     title="Редактировать">
                     <i class="fas fa-edit"></i>
                 </a>
-
+                <form method="POST"
+                    action="{{ route('subtask.copy', $subtask->id) }}"
+                    style="display:inline">
+                    @csrf
+                    <button class="btn btn-sm btn-outline-secondary"
+                        title="Копировать подзадачу">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </form>
+                <form method="POST"
+                    action="{{ route('subtask.promote', $subtask->id) }}"
+                    onsubmit="return confirm('Преобразовать в задачу?')">
+                    @csrf
+                    <button class="btn btn-sm btn-outline-primary" title="Преобразовать в задачу">
+                        <i class="fas fa-level-up-alt"></i>
+                    </button>
+                </form>
                 {{-- Delete --}}
                 <form method="POST"
                     action="{{ route('task.delete', $subtask->id) }}"
