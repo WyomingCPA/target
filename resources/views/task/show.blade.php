@@ -62,50 +62,64 @@
             </div>
         </form>
         @foreach($task->subtasks as $subtask)
-        <div class="d-flex align-items-center justify-content-between mb-2">
+        <div class="d-flex align-items-center justify-content-between mb-2{{ $subtask->created_at->lt(now()->subDays(14)) ? 'bg-light border-left border-danger pl-2' : '' }}">
 
             {{-- Toggle --}}
-            <form method="POST"
-                action="{{ route('task.toggle', $subtask->id) }}">
+            <form method="POST" action="{{ route('task.toggle', $subtask->id) }}">
                 @csrf
                 <input type="checkbox"
                     onchange="this.form.submit()"
                     {{ $subtask->status === 'done' ? 'checked' : '' }}>
             </form>
 
-            {{-- Title --}}
-            <span class="flex-grow-1 ml-2
-        {{ $subtask->status === 'done' ? 'text-muted text-decoration-line-through' : '' }}">
-                {{ $subtask->title }}
-            </span>
+            {{-- Title + meta --}}
+            <div class="flex-grow-1 ml-2">
+
+                <div class="{{ $subtask->status === 'done' ? 'text-muted text-decoration-line-through' : '' }}">
+                    {{ $subtask->title }}
+                </div>
+
+                {{-- Meta --}}
+                <div class="text-muted small">
+                    @php
+                    $isOld = $subtask->created_at->lt(now()->subDays(3));
+                    $isOpen = $subtask->status !== 'done';
+                    @endphp
+
+                    @if($isOld && $isOpen)
+                    <span class="badge bg-danger ml-1">
+                        {{ $subtask->created_at->diffInDays() }} дн
+                    </span>
+                    @endif
+                    <span title="{{ $subtask->created_at }}">
+                        ({{ $subtask->created_at->format('d.m.Y H:i') }})
+                    </span>
+                </div>
+            </div>
 
             {{-- Actions --}}
             <div class="btn-group btn-group-sm ml-2">
-
-                {{-- Edit --}}
                 <a href="{{ route('subtask.edit', $subtask->id) }}"
-                    class="btn btn-warning"
-                    title="Редактировать">
+                    class="btn btn-warning" title="Редактировать">
                     <i class="fas fa-edit"></i>
                 </a>
-                <form method="POST"
-                    action="{{ route('subtask.copy', $subtask->id) }}"
-                    style="display:inline">
+
+                <form method="POST" action="{{ route('subtask.copy', $subtask->id) }}">
                     @csrf
-                    <button class="btn btn-sm btn-outline-secondary"
-                        title="Копировать подзадачу">
+                    <button class="btn btn-outline-secondary" title="Копировать">
                         <i class="fas fa-copy"></i>
                     </button>
                 </form>
+
                 <form method="POST"
                     action="{{ route('subtask.promote', $subtask->id) }}"
                     onsubmit="return confirm('Преобразовать в задачу?')">
                     @csrf
-                    <button class="btn btn-sm btn-outline-primary" title="Преобразовать в задачу">
+                    <button class="btn btn-outline-primary" title="Преобразовать в задачу">
                         <i class="fas fa-level-up-alt"></i>
                     </button>
                 </form>
-                {{-- Delete --}}
+
                 <form method="POST"
                     action="{{ route('task.delete', $subtask->id) }}"
                     onsubmit="return confirm('Удалить подзадачу?')">
@@ -114,8 +128,8 @@
                         <i class="fas fa-trash"></i>
                     </button>
                 </form>
-
             </div>
+
         </div>
         @endforeach
 

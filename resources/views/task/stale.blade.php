@@ -9,7 +9,10 @@
 
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">🧊 Зависшие подзадачи (7+ дней)</h3>
+            <h3 class="card-title">🧊 Зависшие подзадачи (7+ дней)
+                <span class="badge bg-danger ms-2">{{ $count }}</span>
+            </h3>
+
         </div>
 
         <div class="card-body p-0">

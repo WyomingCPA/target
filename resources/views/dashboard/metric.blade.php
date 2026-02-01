@@ -346,7 +346,7 @@
         </div>
         @else
         <div class="alert alert-success">
-            ✅ Отличный день.
+            ✅ Отличная неделя.
         </div>
         @endif
     </div>

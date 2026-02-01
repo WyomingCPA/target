@@ -223,7 +223,8 @@ class TaskController extends Controller
             ->with(['parent', 'project'])
             ->orderBy('created_at')
             ->get();
+        $count = $tasks->count();
 
-        return view('task.stale', compact('tasks'));
+        return view('task.stale', compact('tasks', 'count'));
     }
 }
