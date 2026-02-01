@@ -380,6 +380,11 @@ return [
             'url' => 'task/completed',
             'icon' => 'fas fa-fw fa-user',
         ],
+        [
+            'text' => 'Зависшие подзадачи (7+ дней)',
+            'url' => 'task/stale',
+            'icon' => 'fas fa-fw fa-user',
+        ],
         ['header' => 'Идеи'],
         [
             'text' => 'Идеи',

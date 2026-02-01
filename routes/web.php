@@ -67,6 +67,8 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::get('templates', [TaskGeneratorController::class, 'index'])->name('tasks.templates.index');
     Route::post('decompose', [TaskDecompositionController::class, 'store'])->name('task.decompose');
     Route::get('decompose/create', [TaskDecompositionController::class, 'create'])->name('task.decompose.create');
+    Route::get('stale', [TaskController::class, 'stale'])->name('task.stale');
+
 
     Route::get('/subtask/{task}/edit', [TaskController::class, 'editSubtask'])->name('subtask.edit');
     Route::post('/subtask/{task}', [TaskController::class, 'updateSubtask'])->name('subtask.update');

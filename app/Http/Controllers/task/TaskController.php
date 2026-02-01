@@ -214,4 +214,16 @@ class TaskController extends Controller
 
         return back()->with('success', 'Подзадача скопирована');
     }
+
+    public function stale()
+    {
+        $tasks = Task::whereNotNull('parent_id')
+            ->where('created_at', '<', now()->subDays(7))
+            ->whereIn('status', ['todo', 'in_progress'])
+            ->with(['parent', 'project'])
+            ->orderBy('created_at')
+            ->get();
+
+        return view('task.stale', compact('tasks'));
+    }
 }
