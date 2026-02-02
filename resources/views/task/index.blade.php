@@ -53,7 +53,7 @@
                     <td>
                         <strong>{{ $task->title }}</strong><br>
                         <small class="text-muted">
-                            {{ Str::limit($task->description, 50) }}
+                            {!! Str::limit(strip_tags(Str::markdown($task->description ?? '')),50) !!}
                         </small>
                     </td>
 

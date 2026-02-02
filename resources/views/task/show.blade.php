@@ -21,7 +21,9 @@
 
     <div class="card-body">
 
-        <p>{{ $task->description }}</p>
+        <div class="markdown-body">
+            {!! \Illuminate\Support\Str::markdown($task->description ?? '') !!}
+        </div>
 
         <hr>
         @if($total > 0)

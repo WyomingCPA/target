@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplemde/dist/simplemde.min.css">
 @section('title', 'Dashboard')
 
 @section('content_header')
@@ -34,7 +34,7 @@
                 <!-- DESCRIPTION -->
                 <div class="form-group">
                     <label>Описание</label>
-                    <textarea name="description"
+                    <textarea id="editor" name="description"
                         class="form-control"
                         rows="4"
                         placeholder="Что именно нужно сделать">{{ old('description') }}</textarea>
@@ -110,3 +110,17 @@
 </section>
 
 @stop
+
+@push('js')
+<script src="https://cdn.jsdelivr.net/npm/simplemde/dist/simplemde.min.js"></script>
+<script>
+    new SimpleMDE({
+        element: document.getElementById("editor"),
+        spellChecker: false,
+        toolbar: ["bold", "italic", "heading", "|",
+            "unordered-list", "ordered-list", "|",
+            "link", "code", "preview"
+        ]
+    });
+</script>
+@endpush
