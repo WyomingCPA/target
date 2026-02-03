@@ -14,11 +14,12 @@
         </h3>
 
         <div class="card-tools">
-            <a href="{{ route('task.create') }}"
-                class="btn btn-primary btn-sm">
-                + Добавить задачу
-            </a>
+
             <div class="mb-3 text-right">
+                <a href="{{ route('task.create') }}"
+                    class="btn btn-primary btn-sm">
+                    + Добавить задачу
+                </a>
                 <button class="btn btn-sm btn-outline-secondary"
                     onclick="collapseAll()">
                     ⬆️ Свернуть все
@@ -62,7 +63,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Задача</th>
-                            
+
                             <th>Статус</th>
                             <th>Приоритет</th>
                             <th>Подзадачи</th>

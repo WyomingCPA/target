@@ -30,7 +30,10 @@
             </div>
 
             <span class="badge bg-success">Done</span>
-
+            <a href="{{ route('task.edit', $task->id) }}"
+                class="btn btn-sm btn-secondary">
+                <i class="fas fa-pen"></i>
+            </a>
         </div>
     </div>
     @empty
