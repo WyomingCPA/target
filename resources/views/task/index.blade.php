@@ -18,126 +18,158 @@
                 class="btn btn-primary btn-sm">
                 + Добавить задачу
             </a>
+            <div class="mb-3 text-right">
+                <button class="btn btn-sm btn-outline-secondary"
+                    onclick="collapseAll()">
+                    ⬆️ Свернуть все
+                </button>
+
+                <button class="btn btn-sm btn-outline-primary"
+                    onclick="expandAll()">
+                    ⬇️ Развернуть все
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="card-body p-0">
+    @foreach($tasks as $projectTitle => $projectTasks)
+    <div class="card card-outline card-primary">
 
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Задача</th>
-                    <th>Проект</th>
-                    <th>Статус</th>
-                    <th>Приоритет</th>
-                    <th>Подзадачи</th>
-                    <th>Прогресс</th>
-                    <th>Дедлайн</th>
-                    <th style="width:160px">Action</th>
-                </tr>
-            </thead>
+        {{-- HEADER проекта --}}
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title">
+                <i class="fas fa-folder mr-2"></i>
+                {{ $projectTitle }}
+                <span class="badge badge-secondary ml-2">
+                    {{ $projectTasks->count() }}
+                </span>
+            </h3>
 
-            <tbody>
-                @foreach($tasks as $task)
-                @php
-                $total = $task->subtasks_count;
-                $done = $task->done_subtasks_count;
-                $progress = $total > 0 ? round($done / $total * 100) : 0;
-                @endphp
+            <button class="btn btn-tool"
+                data-toggle="collapse"
+                data-target="#project-{{ Str::slug($projectTitle) }}">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
 
-                <tr>
+        {{-- BODY --}}
+        <div class="collapse show project-collapse"
+            id="project-{{ Str::slug($projectTitle) }}">
 
-                    <td>{{ $task->id }}</td>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Задача</th>
+                            
+                            <th>Статус</th>
+                            <th>Приоритет</th>
+                            <th>Подзадачи</th>
+                            <th>Прогресс</th>
+                            <th>Дедлайн</th>
+                            <th style="width:160px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                    <td>
-                        <strong>{{ $task->title }}</strong><br>
-                        <small class="text-muted">
-                            {!! Str::limit(strip_tags(Str::markdown($task->description ?? '')),50) !!}
-                        </small>
-                    </td>
+                        @foreach($projectTasks as $task)
+                        @php
+                        $total = $task->subtasks_count;
+                        $done = $task->done_subtasks_count;
+                        $progress = $total > 0 ? round($done / $total * 100) : 0;
+                        @endphp
 
-                    <td>
-                        @if($task->project)
-                        <span class="badge badge-info">
-                            {{ $task->project->title }}
-                        </span>
-                        @else
-                        <span class="text-muted">Inbox</span>
-                        @endif
-                    </td>
+                        <tr>
+                            <td style="width:60px">{{ $task->id }}</td>
 
-                    <td>
-                        <span class="badge badge-secondary">
-                            {{ $task->status }}
-                        </span>
-                    </td>
+                            <td>
+                                <strong>{{ $task->title }}</strong><br>
+                                <small class="text-muted">
+                                    {!! Str::limit(strip_tags(Str::markdown($task->description ?? '')), 50) !!}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge badge-secondary">
+                                    {{ $task->status }}
+                                </span>
+                            </td>
+                            <td>
+                                @if($task->priority == 1)
+                                <span class="badge badge-danger">High</span>
+                                @elseif($task->priority == 2)
+                                <span class="badge badge-warning">Medium</span>
+                                @else
+                                <span class="badge badge-secondary">Low</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($task->subtasks_count > 0)
+                                <span class="badge badge-info">
+                                    {{ $task->subtasks_count }} подзадач
+                                </span>
+                                @else
+                                <span class="text-muted">—</span>
+                                @endif
+                            </td>
+                            <td style="width:160px">
+                                @if($total > 0)
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar {{ $progress == 100 ? 'bg-success' : 'bg-info' }}"
+                                        style="width: {{ $progress }}%">
+                                    </div>
+                                </div>
+                                <small>{{ $done }}/{{ $total }} ({{ $progress }}%)</small>
+                                @else
+                                <span class="text-muted">—</span>
+                                @endif
+                            </td>
+                            <td>
+                                {{ $task->due_date ?? '—' }}
+                            </td>
+                            <td style="width:140px">
+                                <a href="{{ route('task.show', $task->id) }}"
+                                    class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('task.edit', $task->id) }}"
+                                    class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                {{-- Кнопка "Удалить" --}}
+                                <form action="{{ route('task.delete', $task->id) }}"
+                                    method="POST"
+                                    style="display:inline-block">
+                                    @csrf
+                                    <button type="submit"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Удалить?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
 
-                    <td>
-                        @if($task->priority == 1)
-                        <span class="badge badge-danger">High</span>
-                        @elseif($task->priority == 2)
-                        <span class="badge badge-warning">Medium</span>
-                        @else
-                        <span class="badge badge-secondary">Low</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($task->subtasks_count > 0)
-                        <span class="badge badge-info">
-                            {{ $task->subtasks_count }} подзадач
-                        </span>
-                        @else
-                        <span class="text-muted">—</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($total > 0)
-                        <div class="progress progress-xs">
-                            <div class="progress-bar
-        {{ $progress == 100 ? 'bg-success' : 'bg-info' }}"
-                                style="width: {{ $progress }}%">
-                            </div>
-                        </div>
-                        <small class="text-muted">
-                            {{ $done }} / {{ $total }} ({{ $progress }}%)
-                        </small>
-                        @else
-                        <small class="text-muted">—</small>
-                        @endif
-                    </td>
-                    <td>
-                        {{ $task->due_date ?? '—' }}
-                    </td>
-
-                    <td>
-                        <a href="{{ route('task.show', $task->id) }}" class="btn btn-sm btn-primary">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="{{ route('task.edit', $task->id) }}" class="btn btn-sm btn-primary">
-                            <i class="fas fa-pen"></i>
-                        </a>
-
-                        {{-- Кнопка "Удалить" --}}
-                        <form action="{{ route('task.delete', $task->id) }}"
-                            method="POST"
-                            style="display:inline-block">
-                            @csrf
-                            <button type="submit"
-                                class="btn btn-sm btn-danger"
-                                onclick="return confirm('Удалить?')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-
-                </tr>
-                @endforeach
-            </tbody>
-
-        </table>
-
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+    @endforeach
+
+</div>
 </div>
 
 @stop
+@push('js')
+<script>
+    function collapseAll() {
+        $('.project-collapse').collapse('hide');
+    }
+
+    function expandAll() {
+        $('.project-collapse').collapse('show');
+    }
+</script>
+@endpush

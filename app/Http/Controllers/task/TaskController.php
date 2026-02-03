@@ -12,16 +12,32 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::with('project')->withCount([
-            'subtasks',
-            'subtasks as done_subtasks_count' => function ($q) {
-                $q->where('status', 'done');
-            }
-        ])->where('status', '!=', 'done')
-            ->whereNull('parent_id')
+        //$tasks = Task::with('project')->withCount([
+        //    'subtasks',
+        //    'subtasks as done_subtasks_count' => function ($q) {
+        //        $q->where('status', 'done');
+        //    }
+        //])->where('status', '!=', 'done')
+        //    ->whereNull('parent_id')
+        //    ->orderBy('status')
+        //    ->orderByDesc('priority')
+        //    ->get();
+
+        $tasks = Task::with('project')
+            ->withCount([
+                'subtasks',
+                'subtasks as done_subtasks_count' => function ($q) {
+                    $q->where('status', 'done');
+                }
+            ])
+            ->where('status', '!=', 'done')   // 🔥 ВАЖНО
+            ->whereNull('parent_id')          // 🔥 ВАЖНО
             ->orderBy('status')
             ->orderByDesc('priority')
-            ->get();
+            ->get()
+            ->groupBy(function ($task) {
+                return $task->project->title ?? 'Inbox';
+            });
 
         return view('task.index', compact('tasks'));
     }
