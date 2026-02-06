@@ -35,6 +35,7 @@
                 <div class="form-group">
                     <label>Описание</label>
                     <textarea name="description"
+                        id="editor"
                         class="form-control"
                         rows="4">{{ old('description', $task->description) }}</textarea>
                 </div>
