@@ -34,16 +34,54 @@
     </div>
 
     @foreach($tasks as $projectTitle => $projectTasks)
+    @php
+    $totalSubtasks = $projectStats[$projectTitle]['subtasks_total'] ?? 0;
+    $doneSubtasks = $projectStats[$projectTitle]['subtasks_done'] ?? 0;
+    $projectProgress = $totalSubtasks > 0
+    ? round(($doneSubtasks / $totalSubtasks) * 100)
+    : 0;
+    $color = match(true) {
+    $projectProgress == 100 => 'bg-success',
+    $projectProgress >= 60 => 'bg-primary',
+    $projectProgress >= 30 => 'bg-warning',
+    default => 'bg-danger'
+    };
+    @endphp
     <div class="card card-outline card-primary">
 
         {{-- HEADER проекта --}}
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title">
-                <i class="fas fa-folder mr-2"></i>
-                {{ $projectTitle }}
-                <span class="badge badge-secondary ml-2">
-                    {{ $projectTasks->count() }}
-                </span>
+            <h3 class="card-title w-100">
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+                        <i class="fas fa-folder mr-2"></i>
+                        {{ $projectTitle }}
+
+                        <span class="badge badge-secondary ml-2">
+                            {{ $projectTasks->count() }} задач
+                        </span>
+                        <span class="badge badge-info ml-2">
+                            {{ $totalSubtasks }} подзадач
+                        </span>
+
+                    </div>
+
+                    @if($totalSubtasks > 0)
+                    <div style="width:220px;">
+                        <div class="progress progress-xs mb-1">
+                            <div class="progress-bar {{ $color }}"
+                                style="width: {{ $projectProgress }}%">
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            {{ $doneSubtasks }}/{{ $totalSubtasks }}
+                            ({{ $projectProgress }}%)
+                        </small>
+                    </div>
+                    @endif
+
+                </div>
             </h3>
 
             <button class="btn btn-tool"
@@ -54,8 +92,7 @@
         </div>
 
         {{-- BODY --}}
-        <div class="collapse show project-collapse"
-            id="project-{{ Str::slug($projectTitle) }}">
+        <div class="collapse project-collapse" id="project-{{ Str::slug($projectTitle) }}">
 
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
@@ -79,6 +116,7 @@
                         $total = $task->subtasks_count;
                         $done = $task->done_subtasks_count;
                         $progress = $total > 0 ? round($done / $total * 100) : 0;
+
                         @endphp
 
                         <tr>

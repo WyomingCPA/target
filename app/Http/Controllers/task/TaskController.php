@@ -30,8 +30,8 @@ class TaskController extends Controller
                     $q->where('status', 'done');
                 }
             ])
-            ->where('status', '!=', 'done')   // 🔥 ВАЖНО
-            ->whereNull('parent_id')          // 🔥 ВАЖНО
+            ->where('status', '!=', 'done')
+            ->whereNull('parent_id')
             ->orderBy('status')
             ->orderByDesc('priority')
             ->get()
@@ -39,7 +39,14 @@ class TaskController extends Controller
                 return $task->project->title ?? 'Inbox';
             });
 
-        return view('task.index', compact('tasks'));
+        $projectStats = $tasks->map(function ($projectTasks) {
+            return [
+                'subtasks_total' => $projectTasks->sum('subtasks_count'),
+                'subtasks_done'  => $projectTasks->sum('done_subtasks_count'),
+            ];
+        });
+
+        return view('task.index', compact('tasks', 'projectStats'));
     }
 
     public function create()
