@@ -37,6 +37,7 @@
     @php
     $totalSubtasks = $projectStats[$projectTitle]['subtasks_total'] ?? 0;
     $doneSubtasks = $projectStats[$projectTitle]['subtasks_done'] ?? 0;
+    $activeSubtasks = $totalSubtasks - $doneSubtasks;
     $projectProgress = $totalSubtasks > 0
     ? round(($doneSubtasks / $totalSubtasks) * 100)
     : 0;
@@ -62,7 +63,7 @@
                             {{ $projectTasks->count() }} задач
                         </span>
                         <span class="badge badge-info ml-2">
-                            {{ $totalSubtasks }} подзадач
+                            {{ $activeSubtasks }} подзадач активных
                         </span>
 
                     </div>
