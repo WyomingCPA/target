@@ -185,6 +185,38 @@ class CoinService
     }
 
     /**
+     * "Продлить" задачу за coins
+     * @param User $user
+     * @param Task $task
+     * @param int $cost Стоимость продления
+     */
+    public function refreshTask(User $user, Task $task, int $cost = 2): void
+    {
+        DB::transaction(function () use ($user, $task, $cost) {
+
+            //if ($user->coins < $cost) {
+            //    throw new \Exception('Недостаточно coins для продления задачи');
+            //}
+
+            // Списываем деньги
+            $user->decrement('coins', $cost);
+
+            // Обновляем created_at на текущий момент
+            $task->update([
+                'created_at' => now(),
+            ]);
+
+            // Записываем транзакцию
+            CoinTransaction::create([
+                'user_id' => $user->id,
+                'task_id' => $task->id,
+                'amount' => -$cost,
+                'type' => CoinTransaction::TYPE_SPEND,
+                'description' => 'Продление задачи (обновление времени создания)',
+            ]);
+        });
+    }
+    /**
      * Проверка баланса
      */
     public function hasEnough(User $user, int $amount): bool

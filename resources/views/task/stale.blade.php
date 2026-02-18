@@ -92,6 +92,14 @@
                                 class="btn btn-sm btn-outline-primary">
                                 👁
                             </a>
+                            <form method="POST"
+                                action="{{ route('subtask.refreshTask', $task->id) }}"
+                                onsubmit="return confirm('Продлить за 2 Coins?')">
+                                @csrf
+                                <button class="btn btn-outline-primary" title="Продлить за 2 Coins">
+                                    <i class="fas fa-level-up-alt"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach

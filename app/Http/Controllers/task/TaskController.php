@@ -249,6 +249,20 @@ class TaskController extends Controller
 
         return back()->with('success', 'Подзадача скопирована');
     }
+    public function refreshTask(Task $task, CoinService $coinService)
+    {
+        // защита: копируем только подзадачи
+        if ($task->parent_id === null) {
+            abort(400, 'Это не подзадача');
+        }
+
+        $user = User::first(); // если один пользователь
+        $cost = 2;
+
+        $coinService->refreshTask($user, $task, $cost);
+
+        return back()->with('success', 'Подзадача продлена за 2 coins');
+    }
 
     public function stale()
     {

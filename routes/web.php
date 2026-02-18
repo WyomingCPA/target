@@ -75,6 +75,7 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::post('/subtask/{task}', [TaskController::class, 'updateSubtask'])->name('subtask.update');
     Route::post('/subtask/{task}/promote', [TaskController::class, 'promoteToTask'])->name('subtask.promote');
     Route::post('/subtasks/{task}/copy', [TaskController::class, 'copySubtask'])->name('subtask.copy');
+    Route::post('/subtasks/{task}/refresh', [TaskController::class, 'refreshTask'])->name('subtask.refreshTask');
 });
 
 Route::group(['prefix' => 'idea', 'middleware' => 'auth',], function () {
