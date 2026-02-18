@@ -15,7 +15,7 @@ use App\Http\Controllers\task\TaskDecompositionController;
 use App\Http\Controllers\idea\IdeaController;
 use App\Http\Controllers\prompt\PromptController;
 use App\Http\Controllers\smoke\SmokeController;
-
+use App\Http\Controllers\coins\CoinController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -79,10 +79,15 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::post('/subtasks/{task}/copy', [TaskController::class, 'copySubtask'])->name('subtask.copy');
     Route::post('/subtasks/{task}/refresh', [TaskController::class, 'refreshTask'])->name('subtask.refreshTask');
 });
+
+Route::group(['prefix' => 'coins', 'middleware' => 'auth',], function () {
+    Route::post('/coins/add', [CoinController::class, 'addCoins'])->name('coins.add');
+});
 Route::group(['prefix' => 'smoke', 'middleware' => 'auth',], function () {
     Route::get('', [SmokeController::class, 'index'])->name('smokes.main');
     Route::post('/smokes', [SmokeController::class, 'store'])->name('smokes.store');
 });
+
 
 Route::group(['prefix' => 'idea', 'middleware' => 'auth',], function () {
     Route::get('', [IdeaController::class, 'index'])->name('idea.main');

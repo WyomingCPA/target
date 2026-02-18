@@ -17,6 +17,14 @@
                 <strong>{{ $balance }} coins</strong>
             </h4>
         </div>
+        <div class="mb-3 d-flex justify-content-end">
+            <form method="POST" action="{{ route('coins.add') }}">
+                @csrf
+                <button type="submit" class="btn btn-success">
+                    💰 Добавить {{ config('coins.fixed_amount', 100) }} coins (1000 руб.)
+                </button>
+            </form>
+        </div>
         <table class="table table-hover text-nowrap">
             <thead>
                 <tr>
