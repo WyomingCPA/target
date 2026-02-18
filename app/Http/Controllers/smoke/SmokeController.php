@@ -8,23 +8,48 @@ use App\Services\CoinService;
 
 use App\Models\Smoke;
 use App\Models\User;
+
 class SmokeController extends Controller
 {
     public function index()
     {
         $smokes = Smoke::latest('smoked_at')->paginate(20);
 
-        $todayCount = Smoke::whereDate('smoked_at', today())->count();
-        $weekCount = Smoke::where('smoked_at', '>=', now()->subDays(7))->count();
-        $totalCount = Smoke::count();
-        $totalPenalty = Smoke::sum('penalty');
+        $lastSmoke = Smoke::latest('smoked_at')->first();
+
+        $timeSinceLast = $lastSmoke
+            ? $lastSmoke->smoked_at->diffInMinutes(now())
+            : null;
+
+        $todaySmokes = Smoke::whereDate('smoked_at', today())->get();
+        $todayCount = $todaySmokes->count();
+        $todayPenalty = $todaySmokes->sum('penalty');
+
+        $allSmokes = Smoke::orderBy('smoked_at')->get();
+
+        // Средний интервал
+        $intervals = [];
+        for ($i = 1; $i < $allSmokes->count(); $i++) {
+            $intervals[] = $allSmokes[$i - 1]
+                ->smoked_at
+                ->diffInMinutes($allSmokes[$i]->smoked_at);
+        }
+
+        $averageInterval = count($intervals)
+            ? round(array_sum($intervals) / count($intervals))
+            : null;
+
+        $maxInterval = count($intervals)
+            ? max($intervals)
+            : null;
 
         return view('smokes.index', compact(
             'smokes',
+            'timeSinceLast',
             'todayCount',
-            'weekCount',
-            'totalCount',
-            'totalPenalty'
+            'todayPenalty',
+            'averageInterval',
+            'maxInterval'
         ));
     }
     public function store(CoinService $coinService)

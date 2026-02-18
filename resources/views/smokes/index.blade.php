@@ -8,45 +8,74 @@
 
 @section('content')
 
-{{-- Статистика --}}
-<div class="row mb-3">
+<div class="row mb-4">
+
+    {{-- С момента последней --}}
+    <div class="col-md-3">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h4>
+                    {{ $timeSinceLast !== null ? $timeSinceLast . ' мин' : '—' }}
+                </h4>
+                <p>С последней сигареты</p>
+            </div>
+        </div>
+    </div>
+
+    {{-- Сегодня --}}
     <div class="col-md-3">
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{ $todayCount }}</h3>
-                <p>Сегодня</p>
-            </div>
-            <div class="icon">
-                <i class="fas fa-smoking"></i>
+                <h4>{{ $todayCount }}</h4>
+                <p>Сегодня выкурено</p>
             </div>
         </div>
     </div>
 
+    {{-- Средний интервал --}}
     <div class="col-md-3">
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{ $weekCount }}</h3>
-                <p>За 7 дней</p>
+                <h4>
+                    {{ $averageInterval ? $averageInterval.' мин' : '—' }}
+                </h4>
+                <p>Средний интервал</p>
             </div>
         </div>
     </div>
 
+    {{-- Лучший результат --}}
     <div class="col-md-3">
-        <div class="small-box bg-secondary">
+        <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ $totalCount }}</h3>
-                <p>Всего</p>
+                <h4>
+                    {{ $maxInterval ? $maxInterval.' мин' : '—' }}
+                </h4>
+                <p>Макс. перерыв</p>
             </div>
         </div>
     </div>
+</div>
+<div class="card card-outline card-info mb-4">
+    <div class="card-header">
+        <h3 class="card-title">ℹ️ Правила списания</h3>
+    </div>
 
-    <div class="col-md-3">
-        <div class="small-box bg-dark">
-            <div class="inner">
-                <h3>-{{ $totalPenalty }}</h3>
-                <p>Списано coins</p>
-            </div>
-        </div>
+    <div class="card-body">
+        <p class="mb-3">
+            Штраф зависит от времени с предыдущей сигареты:
+        </p>
+
+        <ul class="mb-3">
+            <li><strong>&lt; 30 минут</strong> — <span class="text-danger">-6 coins</span></li>
+            <li><strong>&lt; 60 минут</strong> — <span class="text-danger">-4 coins</span></li>
+            <li><strong>&lt; 180 минут</strong> — <span class="text-warning">-2 coins</span></li>
+            <li><strong>&ge; 180 минут</strong> — <span class="text-success">-1 coin</span></li>
+        </ul>
+
+        <small class="text-muted">
+            Чем больше интервал — тем меньше штраф.
+        </small>
     </div>
 </div>
 
