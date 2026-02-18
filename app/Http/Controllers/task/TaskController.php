@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\CoinService;
 
+use App\Models\User;
 use App\Models\Project;
 use App\Models\Task;
 
@@ -220,14 +221,14 @@ class TaskController extends Controller
             ->route('task.show', $task->id)
             ->with('success', 'Подзадача стала задачей проекта');
     }
-    public function copySubtask(Task $task)
+    public function copySubtask(Task $task, CoinService $coinService)
     {
         // защита: копируем только подзадачи
         if ($task->parent_id === null) {
             abort(400, 'Это не подзадача');
         }
 
-        Task::create([
+        $task = Task::create([
             'title'       => $task->title,
             'description' => $task->description,
             'parent_id'   => $task->parent_id,
@@ -235,6 +236,16 @@ class TaskController extends Controller
             'status'      => 'todo',
             'priority'    => $task->priority,
         ]);
+
+        $user = User::first(); // если один пользователь
+        $cost = 5;
+
+        $coinService->spend(
+            user: $user,
+            amount: $cost,
+            description: 'Создание задачи',
+            task: $task
+        );
 
         return back()->with('success', 'Подзадача скопирована');
     }

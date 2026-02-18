@@ -10,6 +10,13 @@ use Exception;
 
 class CoinService
 {
+    // допустимый минус
+    private int $creditLimit = 500; // допустимо уходить в -500 coins
+    private float $dailyInterestPercent = 10.0; // 10% в день на минус
+
+
+
+
     /**
      * Начислить коины за выполненную задачу
      */
@@ -45,20 +52,83 @@ class CoinService
     /**
      * Списать коины
      */
-    public function spend(User $user, int $amount, string $description = null): void
-    {
-        if ($user->coins < $amount) {
-            throw new Exception('Недостаточно средств');
+    /**
+     * Универсальное списание coins с допустимым минусом
+     */
+    public function spend(
+        User $user,
+        int $amount,
+        string $description = null,
+        ?Task $task = null
+    ): void {
+        if ($amount <= 0) {
+            throw new Exception('Amount must be positive');
         }
 
-        DB::transaction(function () use ($user, $amount, $description) {
+        DB::transaction(function () use ($user, $amount, $description, $task) {
+
+            $user->refresh();
+
+            $newBalance = $user->coins - $amount;
+
+            if ($newBalance < -$this->creditLimit) {
+                throw new Exception('Превышен лимит кредита');
+            }
 
             $user->decrement('coins', $amount);
 
             CoinTransaction::create([
                 'user_id' => $user->id,
+                'task_id' => $task?->id,
                 'amount' => -$amount,
-                'type' => 'spend',
+                'type' => CoinTransaction::TYPE_SPEND,
+                'description' => $description,
+            ]);
+        });
+    }
+
+    /**
+     * Начисление процентов на минусовой баланс
+     * Запускать раз в день через Cron
+     */
+    public function chargeInterest(User $user): void
+    {
+        DB::transaction(function () use ($user) {
+            $user->refresh();
+
+            if ($user->coins < 0) {
+                $interest = ceil(abs($user->coins) * ($this->dailyInterestPercent / 100));
+
+                $user->decrement('coins', $interest);
+
+                CoinTransaction::create([
+                    'user_id' => $user->id,
+                    'amount' => -$interest,
+                    'type' => CoinTransaction::TYPE_PENALTY,
+                    'description' => 'Начисление процента на минусовый баланс',
+                ]);
+            }
+        });
+    }
+
+        /**
+     * Начисление coins
+     */
+    public function earn(User $user, int $amount, string $description = null, ?Task $task = null): void
+    {
+        if ($amount <= 0) {
+            throw new Exception('Amount must be positive');
+        }
+
+        DB::transaction(function () use ($user, $amount, $description, $task) {
+
+            $user->increment('coins', $amount);
+
+            CoinTransaction::create([
+                'user_id' => $user->id,
+                'task_id' => $task?->id,
+                'amount' => $amount,
+                'type' => CoinTransaction::TYPE_EARN,
                 'description' => $description,
             ]);
         });
