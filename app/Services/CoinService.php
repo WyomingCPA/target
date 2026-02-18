@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Task;
 use App\Models\CoinTransaction;
+use App\Models\Smoke;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -213,6 +214,49 @@ class CoinService
                 'amount' => -$cost,
                 'type' => CoinTransaction::TYPE_SPEND,
                 'description' => 'Продление задачи (обновление времени создания)',
+            ]);
+        });
+    }
+
+    public function registerSmoke(User $user): void
+    {
+        DB::transaction(function () use ($user) {
+
+            $lastSmoke = Smoke::where('user_id', $user->id)
+                ->latest('smoked_at')
+                ->first();
+
+            $now = now();
+            $penalty = 1; // базовый штраф
+
+            if ($lastSmoke) {
+                $minutes = $lastSmoke->smoked_at->diffInMinutes($now);
+
+                if ($minutes < 30) {
+                    $penalty = 6;
+                } elseif ($minutes < 60) {
+                    $penalty = 4;
+                } elseif ($minutes < 180) {
+                    $penalty = 2;
+                }
+            }
+
+            // списываем coins (может уходить в минус)
+            $user->decrement('coins', $penalty);
+
+            // создаём запись
+            Smoke::create([
+                'user_id' => $user->id,
+                'smoked_at' => $now,
+                'penalty' => $penalty,
+            ]);
+
+            // записываем транзакцию
+            CoinTransaction::create([
+                'user_id' => $user->id,
+                'amount' => -$penalty,
+                'type' => CoinTransaction::TYPE_PENALTY,
+                'description' => "Сигарета (−{$penalty})",
             ]);
         });
     }

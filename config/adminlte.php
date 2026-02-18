@@ -338,8 +338,8 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
-            'text' => 'Панель управления',
-            'url' => 'admin/settings',
+            'text' => 'Выкуренные сигареты',
+            'url' => 'smoke',
             'icon' => 'fas fa-fw fa-user',
         ],
         ['header' => 'Цели'],

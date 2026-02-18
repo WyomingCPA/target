@@ -14,6 +14,8 @@ use App\Http\Controllers\task\TaskGeneratorController;
 use App\Http\Controllers\task\TaskDecompositionController;
 use App\Http\Controllers\idea\IdeaController;
 use App\Http\Controllers\prompt\PromptController;
+use App\Http\Controllers\smoke\SmokeController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -76,6 +78,10 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::post('/subtask/{task}/promote', [TaskController::class, 'promoteToTask'])->name('subtask.promote');
     Route::post('/subtasks/{task}/copy', [TaskController::class, 'copySubtask'])->name('subtask.copy');
     Route::post('/subtasks/{task}/refresh', [TaskController::class, 'refreshTask'])->name('subtask.refreshTask');
+});
+Route::group(['prefix' => 'smoke', 'middleware' => 'auth',], function () {
+    Route::get('', [SmokeController::class, 'index'])->name('smokes.main');
+    Route::post('/smokes', [SmokeController::class, 'store'])->name('smokes.store');
 });
 
 Route::group(['prefix' => 'idea', 'middleware' => 'auth',], function () {
