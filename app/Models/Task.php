@@ -15,12 +15,16 @@ class Task extends Model
         'status',
         'priority',
         'due_date',
-        'completed_at'
+        'completed_at',
+        'reward_coins'
     ];
 
     protected $casts = [
         'due_date' => 'date',
         'completed_at' => 'datetime',
+    ];
+    protected $attributes = [
+        'reward_coins' => 10,
     ];
 
     public function project()

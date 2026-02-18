@@ -172,7 +172,10 @@
                         </span>
                         @endif
                         <span title="{{ $subtask->created_at }}">
-                            ({{ $subtask->created_at->format('d.m.Y H:i') }})
+                            Создано:{{ $subtask->created_at->format('d.m.Y H:i') }}
+                        </span>
+                        <span title="{{ $subtask->updated_at }}">
+                            Обновлено:{{ $subtask->updated_at->format('d.m.Y H:i') }}
                         </span>
                     </div>
                 </div>

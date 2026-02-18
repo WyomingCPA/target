@@ -24,6 +24,7 @@ Auth::routes();
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth',], function () {
     Route::get('', [DashboardController::class, 'index'])->name('main');
     Route::get('/metric', [DashboardController::class, 'metric'])->name('metric');
+    Route::get('/transactions', [DashboardController::class, 'transactions'])->name('transactions');
 });
 
 Route::group(['prefix' => 'ai', 'middleware' => 'auth',], function () {

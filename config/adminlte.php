@@ -333,6 +333,11 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'Транзакций',
+            'url' => 'dashboard/transactions',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        [
             'text' => 'Панель управления',
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-user',

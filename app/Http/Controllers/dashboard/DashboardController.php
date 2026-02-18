@@ -5,14 +5,27 @@ namespace App\Http\Controllers\dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
+use App\Models\User;
 use App\Models\Task;
+use App\Models\CoinTransaction;
+
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
         return view('dashboard.index', []);
+    }
+    public function transactions(Request $request)
+    {
+        $transactions = CoinTransaction::query()
+            ->with('task')
+            ->latest()
+            ->paginate(20);
+        $balance = User::value('coins');
+        return view('dashboard.transactions', compact('transactions', 'balance'));
     }
     public function metric()
     {

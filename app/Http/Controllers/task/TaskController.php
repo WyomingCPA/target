@@ -4,6 +4,7 @@ namespace App\Http\Controllers\task;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\CoinService;
 
 use App\Models\Project;
 use App\Models\Task;
@@ -170,11 +171,11 @@ class TaskController extends Controller
             'total'
         ));
     }
-    public function toggleStatus(Task $task)
+    public function toggleStatus(Task $task, CoinService $coinService)
     {
         $task->status = $task->status === 'done' ? 'todo' : 'done';
         if ($task->status === 'done') {
-            $task->completed_at = now();
+            $coinService->rewardForTask($task);
         } else {
             $task->completed_at = null;
         }
