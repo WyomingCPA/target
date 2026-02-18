@@ -111,7 +111,7 @@ class CoinService
         });
     }
 
-        /**
+    /**
      * Начисление coins
      */
     public function earn(User $user, int $amount, string $description = null, ?Task $task = null): void
@@ -150,6 +150,38 @@ class CoinService
                 'description' => $description,
             ]);
         });
+    }
+    /**
+     * Списание за старые незавершённые задачи
+     * @param User $user
+     * @param int $days Старше скольких дней считать старой
+     * @param int $penalty Сколько списывать за задачу
+     */
+    public function chargeOldTasks(User $user, int $days = 14, int $penalty = 1): void
+    {
+        $thresholdDate = now()->subDays($days);
+
+        $tasks = Task::whereNotNull('parent_id')
+            ->where('created_at', '<', now()->subDays($days))
+            ->whereIn('status', ['todo', 'in_progress'])
+            ->with(['parent', 'project'])
+            ->orderBy('created_at')
+            ->get();
+
+        foreach ($tasks as $task) {
+            DB::transaction(function () use ($user, $task, $penalty) {
+                // Можно не менять статус задачи, просто штрафуем
+                $user->decrement('coins', $penalty);
+
+                CoinTransaction::create([
+                    'user_id' => $user->id,
+                    'task_id' => $task->id,
+                    'amount' => -$penalty,
+                    'type' => CoinTransaction::TYPE_PENALTY,
+                    'description' => 'Списание за старую незавершённую задачу',
+                ]);
+            });
+        }
     }
 
     /**

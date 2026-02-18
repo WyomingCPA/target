@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('coins:charge-interest')->dailyAt('00:00');
+Schedule::command('coins:charge-old-tasks')->dailyAt('00:15');
