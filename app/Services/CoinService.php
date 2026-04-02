@@ -12,7 +12,7 @@ use Exception;
 class CoinService
 {
     // допустимый минус
-    private int $creditLimit = 500; // допустимо уходить в -500 coins
+    private int $creditLimit = 5000; // допустимо уходить в -500 coins
     private float $dailyInterestPercent = 10.0; // 10% в день на минус
 
 
