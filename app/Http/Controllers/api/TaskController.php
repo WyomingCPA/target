@@ -17,7 +17,7 @@ class TaskController extends Controller
             ->whereIn('status', ['todo', 'in_progress'])
             ->with(['parent', 'project'])
             ->orderBy('created_at')
-            ->limit(10)
+            ->limit(5)
             ->get();
         $count = $tasks->count();
 
