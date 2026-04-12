@@ -16,4 +16,5 @@ Route::group(['prefix' => 'smoke',], function () {
 });
 Route::group(['prefix' => 'task',], function () {
     Route::post('stale', [TaskController::class, 'stale']);
+    Route::post('/{task}/toggle-status', [TaskController::class, 'toggleStatus']);
 });
