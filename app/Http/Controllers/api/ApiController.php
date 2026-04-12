@@ -11,7 +11,7 @@ use App\Models\User;
 
 class ApiController extends Controller
 {
-    public function storeSmoke(Request $request, CoinService $coinService)
+    public function storeSmoke(CoinService $coinService)
     {
         $user = User::first(); // если пользователь один
         $coinService->registerSmoke($user);
@@ -19,6 +19,20 @@ class ApiController extends Controller
 
         return response()->json([
             'last_smoke' => $lastSmoke->created_at,
+            'status' => true,
+        ], 200);
+    }
+    public function timeSinceLast(CoinService $coinService)
+    {
+
+        $lastSmoke = Smoke::latest('smoked_at')->first();
+
+        $timeSinceLast = $lastSmoke
+            ? $lastSmoke->smoked_at->diffInMinutes(now())
+            : null;
+
+        return response()->json([
+            'time_since_last' => $timeSinceLast,
             'status' => true,
         ], 200);
     }

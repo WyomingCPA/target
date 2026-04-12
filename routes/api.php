@@ -11,10 +11,6 @@ Route::get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'smoke',], function () {
     Route::post('store-smoke', [ApiController::class, 'storeSmoke']);
-    Route::post('create-sexy-advert', [ApiController::class, 'createSexyAdvert']);
-    Route::post('create-list-button-advert', [ApiController::class, 'createListButtonAdvert']);
+    Route::post('time-since-last', [ApiController::class, 'timeSinceLast']);
 
-    Route::post('update-status-group', [ApiController::class, 'updateStatusGroup']);
-    Route::post('get-statistic', [ApiController::class, 'getStatistic']);
-    Route::get('get-status-group', [ApiController::class, 'getStatusGroups']);
 });
