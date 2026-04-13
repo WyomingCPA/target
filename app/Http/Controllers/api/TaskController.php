@@ -10,6 +10,50 @@ use App\Services\CoinService;
 
 class TaskController extends Controller
 {
+    public function index()
+    {
+        //$tasks = Task::with('project')->withCount([
+        //    'subtasks',
+        //    'subtasks as done_subtasks_count' => function ($q) {
+        //        $q->where('status', 'done');
+        //    }
+        //])->where('status', '!=', 'done')
+        //    ->whereNull('parent_id')
+        //    ->orderBy('status')
+        //    ->orderByDesc('priority')
+        //    ->get();
+
+        $tasks = Task::with('project')
+            ->withCount([
+                'subtasks',
+                'subtasks as done_subtasks_count' => function ($q) {
+                    $q->where('status', 'done');
+                }
+            ])
+            ->where('status', '!=', 'done')
+            ->whereNull('parent_id')
+            ->orderBy('status')
+            ->orderByDesc('priority')
+            ->get()
+            ->groupBy(function ($task) {
+                return $task->project->title ?? 'Inbox';
+            });
+
+        $projectStats = $tasks->map(function ($projectTasks) {
+            return [
+                'subtasks_total' => $projectTasks->sum('subtasks_count'),
+                'subtasks_done'  => $projectTasks->sum('done_subtasks_count'),
+            ];
+        });
+
+        return response()->json([
+            'tasks' => $tasks,
+            'projectStats' => $projectStats,
+            'status' => true,
+        ], 200);
+    }
+
+
     public function stale()
     {
         $tasks = Task::whereNotNull('parent_id')

@@ -15,6 +15,7 @@ Route::group(['prefix' => 'smoke',], function () {
     Route::post('time-since-last', [ApiController::class, 'timeSinceLast']);
 });
 Route::group(['prefix' => 'task',], function () {
+    Route::post('', [TaskController::class, 'index']);
     Route::post('stale', [TaskController::class, 'stale']);
     Route::post('/{task}/toggle-status', [TaskController::class, 'toggleStatus']);
 });
