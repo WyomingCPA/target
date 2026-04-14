@@ -10,48 +10,69 @@ use App\Services\CoinService;
 
 class TaskController extends Controller
 {
-    public function index()
-    {
-        //$tasks = Task::with('project')->withCount([
-        //    'subtasks',
-        //    'subtasks as done_subtasks_count' => function ($q) {
-        //        $q->where('status', 'done');
-        //    }
-        //])->where('status', '!=', 'done')
-        //    ->whereNull('parent_id')
-        //    ->orderBy('status')
-        //    ->orderByDesc('priority')
-        //    ->get();
+public function index()
+{
+    $tasks = Task::with([
+        'project',
+        'subtasks' => function ($q) {
+            $q->where('status', '!=', 'done')
+              ->orderBy('created_at', 'desc');
+        }
+    ])
+    ->withCount([
+        'subtasks',
+        'subtasks as done_subtasks_count' => function ($q) {
+            $q->where('status', 'done');
+        }
+    ])
+    ->where('status', '!=', 'done')
+    ->whereNull('parent_id')
+    ->orderBy('status')
+    ->orderByDesc('priority')
+    ->get()
+    ->groupBy(function ($task) {
+        return $task->project->title ?? 'Inbox';
+    });
 
-        $tasks = Task::with('project')
-            ->withCount([
-                'subtasks',
-                'subtasks as done_subtasks_count' => function ($q) {
-                    $q->where('status', 'done');
-                }
-            ])
-            ->where('status', '!=', 'done')
-            ->whereNull('parent_id')
-            ->orderBy('status')
-            ->orderByDesc('priority')
-            ->get()
-            ->groupBy(function ($task) {
-                return $task->project->title ?? 'Inbox';
-            });
+    // 📊 статистика по проектам
+    $projectStats = $tasks->map(function ($projectTasks) {
+        return [
+            'subtasks_total' => $projectTasks->sum('subtasks_count'),
+            'subtasks_done'  => $projectTasks->sum('done_subtasks_count'),
+        ];
+    });
 
-        $projectStats = $tasks->map(function ($projectTasks) {
+    // 🔥 нормализуем вывод (очень важно для бота)
+    $tasksFormatted = $tasks->map(function ($projectTasks) {
+        return $projectTasks->map(function ($task) {
+
             return [
-                'subtasks_total' => $projectTasks->sum('subtasks_count'),
-                'subtasks_done'  => $projectTasks->sum('done_subtasks_count'),
+                'id' => $task->id,
+                'title' => $task->title,
+                'description' => $task->description,
+                'status' => $task->status,
+
+                'subtasks_count' => $task->subtasks_count,
+                'done_subtasks_count' => $task->done_subtasks_count,
+
+                // 👇 вот главное
+                'subtasks' => $task->subtasks->map(function ($subtask) {
+                    return [
+                        'id' => $subtask->id,
+                        'title' => $subtask->title,
+                        'status' => $subtask->status,
+                    ];
+                }),
             ];
         });
+    });
 
-        return response()->json([
-            'tasks' => $tasks,
-            'projectStats' => $projectStats,
-            'status' => true,
-        ], 200);
-    }
+    return response()->json([
+        'tasks' => $tasksFormatted,
+        'projectStats' => $projectStats,
+        'status' => true,
+    ], 200);
+}
 
 
     public function stale()
