@@ -20,7 +20,13 @@
         <div class="mb-3 d-flex justify-content-end">
             <form method="POST" action="{{ route('coins.add') }}">
                 @csrf
-                <button type="submit" class="btn btn-success">
+                <button  name="amount" value="10"  type="submit" class="btn btn-success">
+                    💰 Добавить {{ config('coins.fixed_amount', 10) }} coins (100 руб.)
+                </button>
+                <button name="amount" value="50"  type="submit" class="btn btn-success">
+                    💰 Добавить {{ config('coins.fixed_amount', 50) }} coins (500 руб.)
+                </button>
+                <button name="amount" value="100"  type="submit" class="btn btn-success">
                     💰 Добавить {{ config('coins.fixed_amount', 100) }} coins (1000 руб.)
                 </button>
             </form>

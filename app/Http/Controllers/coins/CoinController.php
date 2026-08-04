@@ -10,23 +10,25 @@ use App\Models\User;
 
 class CoinController extends Controller
 {
-public function addCoins()
-{
-    $user = User::first(); // если пользователь один
+    public function addCoins(Request $request)
+    {
+        $user = User::first(); // если пользователь один
 
-    $amount = config('coins.fixed_amount', 100);
+        $amount_count = $request->input('amount');
 
-    // Начисляем coins
-    $user->increment('coins', $amount);
+        $amount = config('coins.fixed_amount', $amount_count);
 
-    // Регистрируем транзакцию
-    CoinTransaction::create([
-        'user_id' => $user->id,
-        'amount' => $amount,
-        'type' => 'deposit',
-        'description' => "Пополнение на фиксированную сумму {$amount} coins(1000 руб)",
-    ]);
+        // Начисляем coins
+        $user->increment('coins', $amount);
 
-    return back()->with('success', "{$amount} coins начислено!");
-}
+        // Регистрируем транзакцию
+        CoinTransaction::create([
+            'user_id' => $user->id,
+            'amount' => $amount,
+            'type' => 'deposit',
+            'description' => "Пополнение на фиксированную сумму {$amount} coins(1000 руб)",
+        ]);
+
+        return back()->with('success', "{$amount} coins начислено!");
+    }
 }
