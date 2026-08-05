@@ -12,9 +12,9 @@ use Exception;
 class CoinService
 {
     // допустимый минус
-    private int $creditLimit = 5000; // допустимо уходить в -500 coins
-    private float $dailyInterestPercent = 10.0; // 10% в день на минус
-
+    private int $creditLimit = 7000; // допустимо уходить в -500 coins
+    private float $dailyInterestPercent = 20.0; // 10% в день на минус
+    private float $dailyInterestPlusPercent = 10.0; // 10% в день на минус
 
 
 
@@ -107,6 +107,18 @@ class CoinService
                     'amount' => -$interest,
                     'type' => CoinTransaction::TYPE_PENALTY,
                     'description' => 'Начисление процента на минусовый баланс',
+                ]);
+            }
+            if ($user->coins > 0) {
+                $interest = ceil(abs($user->coins) * ($this->dailyInterestPlusPercent / 100));
+
+                $user->decrement('coins', $interest);
+
+                CoinTransaction::create([
+                    'user_id' => $user->id,
+                    'amount' => $interest,
+                    'type' => CoinTransaction::TYPE_EARN,
+                    'description' => 'Начисление процента на плюсовой баланс',
                 ]);
             }
         });

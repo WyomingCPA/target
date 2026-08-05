@@ -235,6 +235,7 @@ class TaskController extends Controller
             'project_id'  => $task->project_id,
             'status'      => 'todo',
             'priority'    => $task->priority,
+            'reward_coins'    => 15,
         ]);
 
         $user = User::first(); // если один пользователь
