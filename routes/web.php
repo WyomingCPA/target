@@ -16,6 +16,8 @@ use App\Http\Controllers\idea\IdeaController;
 use App\Http\Controllers\prompt\PromptController;
 use App\Http\Controllers\smoke\SmokeController;
 use App\Http\Controllers\coins\CoinController;
+use App\Http\Controllers\ShopItemController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,6 +36,19 @@ Route::group(['prefix' => 'ai', 'middleware' => 'auth',], function () {
     Route::get('idea', [AiController::class, 'idea'])->name('idea');
     Route::get('decomposition-task', [AiController::class, 'decompositionTask'])->name('decomposition-task');
     Route::get('plan', [AiController::class, 'plan'])->name('plan');
+});
+
+
+Route::group(['prefix' => 'shop', 'middleware' => 'auth',], function () {
+    Route::get('', [ShopItemController::class, 'index'])->name('shop.main');
+    Route::get('create', [ShopItemController::class, 'create'])->name('shop.create');
+    Route::post('store', [ShopItemController::class, 'store'])->name('shop.store');
+    Route::get('/edit/{id}', [ShopItemController::class, 'edit'])->name('shop.edit');
+    Route::post('delete/{id}', [ShopItemController::class, 'delete'])->name('shop.delete');
+    Route::post('buy/{item}', [ShopItemController::class, 'buy'])->name('shop.buy');
+    Route::get('/my-purchases', [ShopItemController::class, 'myPurchases'])
+        ->name('shop.purchases');
+    Route::post('/shop-purchases/{purchase}/use', [ShopItemController::class, 'usePurchase'])->name('shop.use');
 });
 
 Route::group(['prefix' => 'goal', 'middleware' => 'auth',], function () {

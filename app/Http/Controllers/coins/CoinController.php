@@ -25,8 +25,8 @@ class CoinController extends Controller
         CoinTransaction::create([
             'user_id' => $user->id,
             'amount' => $amount,
-            'type' => 'deposit',
-            'description' => "Пополнение на фиксированную сумму {$amount} coins(1000 руб)",
+            'type' => 'earn',
+            'description' => "Пополнение на сумму {$amount} coins",
         ]);
 
         return back()->with('success', "{$amount} coins начислено!");

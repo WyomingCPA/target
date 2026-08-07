@@ -342,6 +342,16 @@ return [
             'url' => 'smoke',
             'icon' => 'fas fa-fw fa-user',
         ],
+        [
+            'text' => 'Магазин возможностей',
+            'url' => 'shop',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        [
+            'text' => 'Мой покупки',
+            'url' => 'shop/my-purchases',
+            'icon' => 'fas fa-fw fa-user',
+        ],
         ['header' => 'Цели'],
         [
             'text' => 'Цели',
