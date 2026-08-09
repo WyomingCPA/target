@@ -56,17 +56,26 @@ class ShopItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(ShopItem $item)
     {
-        //
+        return view('shop.edit', compact('item'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, ShopItem $item)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $item->update($validated);
+
+        return redirect()
+            ->route('shop.main')
+            ->with('success', 'Товар обновлён');
     }
 
     /**

@@ -43,12 +43,13 @@ Route::group(['prefix' => 'shop', 'middleware' => 'auth',], function () {
     Route::get('', [ShopItemController::class, 'index'])->name('shop.main');
     Route::get('create', [ShopItemController::class, 'create'])->name('shop.create');
     Route::post('store', [ShopItemController::class, 'store'])->name('shop.store');
-    Route::get('/edit/{id}', [ShopItemController::class, 'edit'])->name('shop.edit');
     Route::post('delete/{id}', [ShopItemController::class, 'delete'])->name('shop.delete');
     Route::post('buy/{item}', [ShopItemController::class, 'buy'])->name('shop.buy');
     Route::get('/my-purchases', [ShopItemController::class, 'myPurchases'])
         ->name('shop.purchases');
     Route::post('/shop-purchases/{purchase}/use', [ShopItemController::class, 'usePurchase'])->name('shop.use');
+    Route::get('edit/{item}', [ShopItemController::class, 'edit'])->name('shop.edit');
+    Route::post('/update/{item}', [ShopItemController::class, 'update'])->name('shop.update');
 });
 
 Route::group(['prefix' => 'goal', 'middleware' => 'auth',], function () {
