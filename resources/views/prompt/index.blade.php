@@ -71,7 +71,6 @@
                             style="display:inline-block"
                             onsubmit="return confirm('Удалить промт?')">
                             @csrf
-                            @method('DELETE')
                             <button class="btn btn-outline-danger btn-sm">
                                 <i class="fas fa-trash"></i>
                             </button>
