@@ -112,7 +112,7 @@ class CoinService
             if ($user->coins > 0) {
                 $interest = ceil(abs($user->coins) * ($this->dailyInterestPlusPercent / 100));
 
-                $user->decrement('coins', $interest);
+                $user->increment('coins', $interest);
 
                 CoinTransaction::create([
                     'user_id' => $user->id,
