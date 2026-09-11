@@ -10,6 +10,7 @@ class ShopPurchase extends Model
         'user_id',
         'shop_item_id',
         'used',
+        'notes',
     ];
     public function shopItem()
     {

@@ -120,6 +120,7 @@ class ShopItemController extends Controller
 
         return view('shop.purchases', compact('purchases'));
     }
+
     public function usePurchase(ShopPurchase $purchase)
     {
         $user = Auth::user();
@@ -132,5 +133,18 @@ class ShopItemController extends Controller
         ]);
 
         return back()->with('success', 'Возможность использована');
+    }
+
+    public function updateNotes(Request $request, ShopPurchase $purchase)
+    {
+        $request->validate([
+            'notes' => 'nullable|string|max:5000',
+        ]);
+
+        $purchase->update([
+            'notes' => $request->notes,
+        ]);
+
+        return back()->with('success', 'Заметка сохранена');
     }
 }

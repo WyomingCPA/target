@@ -50,6 +50,7 @@ Route::group(['prefix' => 'shop', 'middleware' => 'auth',], function () {
     Route::post('/shop-purchases/{purchase}/use', [ShopItemController::class, 'usePurchase'])->name('shop.use');
     Route::get('edit/{item}', [ShopItemController::class, 'edit'])->name('shop.edit');
     Route::post('/update/{item}', [ShopItemController::class, 'update'])->name('shop.update');
+    Route::patch('/shop/purchases/{purchase}/notes', [ShopItemController::class, 'updateNotes'])->name('shop.purchase.notes.update');
 });
 
 Route::group(['prefix' => 'goal', 'middleware' => 'auth',], function () {
