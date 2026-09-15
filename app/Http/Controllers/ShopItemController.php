@@ -116,7 +116,7 @@ class ShopItemController extends Controller
         $purchases = ShopPurchase::with('shopItem')
             ->where('user_id', $user->id)
             ->latest()
-            ->get();
+            ->paginate(20);
 
         return view('shop.purchases', compact('purchases'));
     }

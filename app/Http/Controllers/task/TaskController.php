@@ -35,6 +35,7 @@ class TaskController extends Controller
             ->where('status', '!=', 'done')
             ->whereNull('parent_id')
             ->orderBy('status')
+            ->orderByDesc('done_subtasks_count')
             ->orderByDesc('priority')
             ->get()
             ->groupBy(function ($task) {

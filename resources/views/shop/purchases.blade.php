@@ -176,7 +176,9 @@
             </tbody>
 
         </table>
-
+        <div class="mt-3">
+            {{ $purchases->links() }}
+        </div>
     </div>
 </div>
 
