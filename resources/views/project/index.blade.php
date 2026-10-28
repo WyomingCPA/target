@@ -32,6 +32,8 @@
                         <th>Статус</th>
                         <th>Стек</th>
                         <th>Прогресс</th>
+                        <th>Сегодня</th>
+                        <th>За неделю</th>
                         <th style="width:180px">Action</th>
                     </tr>
                 </thead>
@@ -88,16 +90,27 @@
                         </td>
 
                         <!-- PROGRESS -->
-                        <td>
-                            {{ $project->progress ?? 0 }}%
+                        <td style="min-width:120px">
+                            <div class="mb-1">
+                                {{ $project->progress ?? 0 }}%
+                            </div>
+                            <div class="progress progress-xs">
+                                <div class="progress-bar bg-success"
+                                    style="width: {{ min(100, max(0, $project->progress ?? 0)) }}%">
+                                </div>
+                            </div>
                         </td>
 
                         <td>
-                            <div class="progress progress-xs">
-                                <div class="progress-bar bg-success"
-                                    style="width: {{ $project->progress ?? 0 }}%">
-                                </div>
-                            </div>
+                            <span class="badge badge-success">
+                                {{ $project->completed_today_count }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-info">
+                                {{ $project->completed_week_count }}
+                            </span>
                         </td>
 
                         <!-- ACTION -->

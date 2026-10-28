@@ -12,7 +12,25 @@ class ProjectController extends Controller
 {
     public function index()
     {
+        $todayStart = now()->startOfDay();
+        $tomorrow = now()->addDay()->startOfDay();
+
+        $weekStart = now()->startOfWeek();
+        $nextWeek = now()->startOfWeek()->addWeek();
+
         $projects = Project::with('goal')
+            ->withCount([
+                'tasks as completed_today_count' => function ($query) use ($todayStart, $tomorrow) {
+                    $query->where('status', 'done')
+                        ->where('completed_at', '>=', $todayStart)
+                        ->where('completed_at', '<', $tomorrow);
+                },
+                'tasks as completed_week_count' => function ($query) use ($weekStart, $nextWeek) {
+                    $query->where('status', 'done')
+                        ->where('completed_at', '>=', $weekStart)
+                        ->where('completed_at', '<', $nextWeek);
+                },
+            ])
             ->orderByDesc('status')
             ->get();
 
@@ -28,42 +46,42 @@ class ProjectController extends Controller
             'goals' => $goals,
         ]);
     }
-public function update(Request $request, $id)
-{
-    // 1. input как ты любишь
-    $name        = $request->input('title');
-    $goal_id     = $request->input('goal_id');
-    $status      = $request->input('status');
-    $stack       = $request->input('tech_stack');
-    $description = $request->input('description');
+    public function update(Request $request, $id)
+    {
+        // 1. input как ты любишь
+        $name        = $request->input('title');
+        $goal_id     = $request->input('goal_id');
+        $status      = $request->input('status');
+        $stack       = $request->input('tech_stack');
+        $description = $request->input('description');
 
-    // 2. validate
-    $request->validate([
-        'title'       => 'required|string|max:255',
-        'goal_id'     => 'nullable|exists:goals,id',
-        'status'      => 'required|string',
-        'tech_stack'  => 'nullable|array',
-        'description' => 'nullable|string',
-    ]);
+        // 2. validate
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'goal_id'     => 'nullable|exists:goals,id',
+            'status'      => 'required|string',
+            'tech_stack'  => 'nullable|array',
+            'description' => 'nullable|string',
+        ]);
 
-    // 3. save
-    $project = Project::findOrFail($id);
+        // 3. save
+        $project = Project::findOrFail($id);
 
-    $project->title       = $name;
-    $project->goal_id     = $goal_id ?: null;
-    $project->status      = $status;
-    $project->description = $description;
+        $project->title       = $name;
+        $project->goal_id     = $goal_id ?: null;
+        $project->status      = $status;
+        $project->description = $description;
 
-    $project->tech_stack  = json_encode(
-        array_filter($stack ?: []),
-        JSON_UNESCAPED_UNICODE
-    );
+        $project->tech_stack  = json_encode(
+            array_filter($stack ?: []),
+            JSON_UNESCAPED_UNICODE
+        );
 
-    $project->save();
+        $project->save();
 
-    return redirect()->route('project.main')
-        ->with('success', 'Проект обновлён');
-}
+        return redirect()->route('project.main')
+            ->with('success', 'Проект обновлён');
+    }
     public function edit($id)
     {
         $project = Project::findOrFail($id);
