@@ -175,12 +175,20 @@ class TaskController extends Controller
     }
     public function toggleStatus(Task $task, CoinService $coinService)
     {
-        $task->status = $task->status === 'done' ? 'todo' : 'done';
         if ($task->status === 'done') {
-            $coinService->rewardForTask($task);
-        } else {
+            $task->status = 'todo';
             $task->completed_at = null;
+        } else {
+            $task->status = 'done';
+            $task->completed_at = now();
+
+            $task->save();
+
+            $coinService->rewardForTask($task);
+
+            return back();
         }
+
         $task->save();
 
         return back();
@@ -233,7 +241,8 @@ class TaskController extends Controller
             'title'       => $task->title,
             'description' => $task->description,
             'parent_id'   => $task->parent_id,
-            'project_id'  => $task->project_id,
+            'project_id' => $task->project_id
+                ?? $task->parent?->project_id,
             'status'      => 'todo',
             'priority'    => $task->priority,
             'reward_coins'    => 15,
