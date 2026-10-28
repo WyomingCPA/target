@@ -31,7 +31,7 @@ class ProjectController extends Controller
                         ->where('completed_at', '<', $nextWeek);
                 },
             ])
-            ->orderByDesc('status')
+            ->orderByDesc('completed_week_count')
             ->get();
 
         return view('project.index', [
