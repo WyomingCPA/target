@@ -3,25 +3,25 @@
 @section('title', $taskBlock->title)
 
 @section('content_header')
-    <h1>{{ $taskBlock->title }}</h1>
+<h1>{{ $taskBlock->title }}</h1>
 @stop
 
 @section('content')
 
 @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
 @endif
 
 @if($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+<div class="alert alert-danger">
+    <ul class="mb-0">
+        @foreach($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
 @endif
 
 <div class="card card-primary">
@@ -30,7 +30,7 @@
     </div>
 
     <form method="POST"
-          action="{{ route('task-blocks.update', $taskBlock) }}">
+        action="{{ route('task-blocks.update', $taskBlock) }}">
         @csrf
         @method('PUT')
 
@@ -38,16 +38,16 @@
             <div class="form-group">
                 <label>Название</label>
                 <input type="text" name="title"
-                       class="form-control"
-                       value="{{ old('title', $taskBlock->title) }}"
-                       required>
+                    class="form-control"
+                    value="{{ old('title', $taskBlock->title) }}"
+                    required>
             </div>
 
             <div class="form-group">
                 <label>Описание</label>
                 <textarea name="description"
-                          class="form-control"
-                          rows="2">{{ old('description', $taskBlock->description) }}</textarea>
+                    class="form-control"
+                    rows="2">{{ old('description', $taskBlock->description) }}</textarea>
             </div>
         </div>
 
@@ -65,44 +65,40 @@
     </div>
 
     <form method="POST"
-          action="{{ route('task-blocks.tasks.attach', $taskBlock) }}">
+        action="{{ route('task-blocks.tasks.attach', $taskBlock) }}">
         @csrf
 
         <div class="card-body">
             @if($availableTasks->isEmpty())
-                <p class="text-muted mb-0">
-                    Все существующие задачи уже добавлены в этот блок.
-                </p>
+            <p class="text-muted mb-0">
+                Все существующие задачи уже добавлены в этот блок.
+            </p>
             @else
-                <div class="form-group">
-                    <label>Выбери задачи (можно несколько)</label>
+            <div class="form-group">
+                <label>Выбери задачи (можно несколько)</label>
 
-                    <select name="task_ids[]"
-                            class="form-control"
-                            multiple
-                            size="8"
-                            required>
-                        @foreach($availableTasks as $task)
-                            <option value="{{ $task->id }}"
-                                @selected(in_array(
-                                    $task->id,
-                                    old('task_ids', [])
-                                ))>
-                                #{{ $task->id }} — {{ $task->title }}
-                                ({{ $task->status }})
-                            </option>
-                        @endforeach
-                    </select>
+                <select name="task_ids[]"
+                    class="form-control"
+                    multiple
+                    size="8"
+                    required>
+                    @foreach($availableTasks as $task)
+                    <option value="{{ $task->id }}">
+                        {{ $task->parent?->title ?? 'Без родительской задачи' }}
+                        → {{ $task->title }}
+                    </option>
+                    @endforeach
+                </select>
 
-                    <small class="form-text text-muted">
-                        Удерживай Ctrl (Windows) или Cmd (Mac),
-                        чтобы выбрать несколько задач.
-                    </small>
-                </div>
+                <small class="form-text text-muted">
+                    Удерживай Ctrl (Windows) или Cmd (Mac),
+                    чтобы выбрать несколько задач.
+                </small>
+            </div>
 
-                <button class="btn btn-success">
-                    Добавить в блок
-                </button>
+            <button class="btn btn-success">
+                Добавить в блок
+            </button>
             @endif
         </div>
     </form>
@@ -126,53 +122,53 @@
 
             <tbody>
                 @forelse($taskBlock->tasks as $task)
-                    <tr>
-                        <td>
-                            {{ $task->title }}
-                            <small class="text-muted">
-                                #{{ $task->id }}
-                            </small>
-                        </td>
+                <tr>
+                    <td>
+                        {{ $task->title }}
+                        <small class="text-muted">
+                            #{{ $task->id }}
+                        </small>
+                    </td>
 
-                        <td>
-                            {{ $task->project?->title ?? 'Без проекта' }}
-                        </td>
+                    <td>
+                        {{ $task->project?->title ?? 'Без проекта' }}
+                    </td>
 
-                        <td>
-                            @if($task->status === 'done')
-                                <span class="badge badge-success">
-                                    Выполнено
-                                </span>
-                            @else
-                                <span class="badge badge-secondary">
-                                    {{ $task->status }}
-                                </span>
-                            @endif
-                        </td>
+                    <td>
+                        @if($task->status === 'done')
+                        <span class="badge badge-success">
+                            Выполнено
+                        </span>
+                        @else
+                        <span class="badge badge-secondary">
+                            {{ $task->status }}
+                        </span>
+                        @endif
+                    </td>
 
-                        <td>
-                            <form method="POST"
-                                  action="{{ route(
+                    <td>
+                        <form method="POST"
+                            action="{{ route(
                                       'task-blocks.tasks.detach',
                                       [$taskBlock, $task]
                                   ) }}"
-                                  onsubmit="return confirm('Убрать задачу из блока?')">
-                                @csrf
-                                @method('DELETE')
+                            onsubmit="return confirm('Убрать задачу из блока?')">
+                            @csrf
+                            @method('DELETE')
 
-                                <button class="btn btn-outline-danger btn-sm"
-                                        title="Убрать из блока">
-                                    <i class="fas fa-unlink"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
+                            <button class="btn btn-outline-danger btn-sm"
+                                title="Убрать из блока">
+                                <i class="fas fa-unlink"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
                 @empty
-                    <tr>
-                        <td colspan="4" class="text-center text-muted">
-                            В блоке пока нет задач.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="4" class="text-center text-muted">
+                        В блоке пока нет задач.
+                    </td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
@@ -180,8 +176,8 @@
 </div>
 
 <form method="POST"
-      action="{{ route('task-blocks.destroy', $taskBlock) }}"
-      onsubmit="return confirm('Удалить блок? Сами задачи сохранятся.')">
+    action="{{ route('task-blocks.destroy', $taskBlock) }}"
+    onsubmit="return confirm('Удалить блок? Сами задачи сохранятся.')">
     @csrf
     @method('DELETE')
 
@@ -190,7 +186,7 @@
     </button>
 
     <a href="{{ route('task-blocks.index') }}"
-       class="btn btn-default">
+        class="btn btn-default">
         К списку блоков
     </a>
 </form>
