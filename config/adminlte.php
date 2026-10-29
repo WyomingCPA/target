@@ -400,6 +400,11 @@ return [
             'url' => 'task/stale',
             'icon' => 'fas fa-fw fa-user',
         ],
+        [
+            'text' => 'Блоки прокачки',
+            'url' => 'task-blocks',
+            'icon' => 'fas fa-fw fa-user',
+        ],
         ['header' => 'Идеи'],
         [
             'text' => 'Идеи',

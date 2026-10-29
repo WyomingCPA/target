@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class Task extends Model
 {
@@ -49,5 +51,14 @@ class Task extends Model
         return $query
             ->where('status', 'done')
             ->whereNull('parent_id'); // ⛔ не подзадачи
+    }
+    public function taskBlocks(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            TaskBlock::class,
+            'task_block',
+            'task_id',
+            'task_block_id'
+        )->withTimestamps();
     }
 }

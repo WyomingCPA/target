@@ -17,7 +17,7 @@ use App\Http\Controllers\prompt\PromptController;
 use App\Http\Controllers\smoke\SmokeController;
 use App\Http\Controllers\coins\CoinController;
 use App\Http\Controllers\ShopItemController;
-
+use App\Http\Controllers\TaskBlockController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -71,6 +71,32 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth',], function () {
     Route::post('delete/{id}', [ProjectController::class, 'delete'])->name('project.delete');
     Route::post('/update/{id}', [ProjectController::class, 'update'])->name('project.update');
 });
+Route::group(['prefix' => 'task-blocks', 'middleware' => 'auth',], function () {
+    Route::get('/', [TaskBlockController::class, 'index'])
+        ->name('task-blocks.index');
+
+    Route::get('/task-blocks/create', [TaskBlockController::class, 'create'])
+        ->name('task-blocks.create');
+
+    Route::post('/task-blocks', [TaskBlockController::class, 'store'])
+        ->name('task-blocks.store');
+
+    Route::get('/task-blocks/{taskBlock}', [TaskBlockController::class, 'show'])
+        ->name('task-blocks.show');
+
+    Route::put('/task-blocks/{taskBlock}', [TaskBlockController::class, 'update'])
+        ->name('task-blocks.update');
+
+    Route::delete('/task-blocks/{taskBlock}', [TaskBlockController::class, 'destroy'])
+        ->name('task-blocks.destroy');
+
+    Route::post('/task-blocks/{taskBlock}/tasks', [TaskBlockController::class, 'attachTasks'])
+        ->name('task-blocks.tasks.attach');
+
+    Route::delete('/task-blocks/{taskBlock}/tasks/{task}', [TaskBlockController::class, 'detachTask'])
+        ->name('task-blocks.tasks.detach');
+});
+
 
 Route::group(['prefix' => 'task', 'middleware' => 'auth',], function () {
     Route::get('', [TaskController::class, 'index'])->name('task.main');
