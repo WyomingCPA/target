@@ -126,7 +126,7 @@
                     <td>
                         {{ $task->title }}
                         <small class="text-muted">
-                            #{{ $task->id }}
+                            #{{ $task->parent?->title ?? 'Без родительской задачи' }}
                         </small>
                     </td>
 
