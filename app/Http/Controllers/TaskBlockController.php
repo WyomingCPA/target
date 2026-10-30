@@ -41,24 +41,38 @@ class TaskBlockController extends Controller
 
     public function show(TaskBlock $taskBlock)
     {
+        // Загружаем все задачи блока, включая завершённые
         $taskBlock->load([
             'tasks' => fn($query) => $query
-                ->with('project')
+                ->with(['project', 'parent'])
                 ->whereNotNull('parent_id')
-                ->where('status', '!=', 'done')
                 ->orderByDesc('id'),
         ]);
 
+        // Активные задачи
+        $activeTasks = $taskBlock->tasks
+            ->where('status', '!=', 'done');
+
+        // Завершённые задачи
+        $completedTasks = $taskBlock->tasks
+            ->where('status', 'done');
+
+        // Доступные для добавления задачи
         $availableTasks = Task::whereNotNull('parent_id')
             ->where('status', '!=', 'done')
             ->whereDoesntHave('taskBlocks', function ($query) use ($taskBlock) {
                 $query->where('task_blocks.id', $taskBlock->id);
             })
-            ->with('project')
+            ->with(['project', 'parent'])
             ->orderByDesc('id')
             ->get();
 
-        return view('task-blocks.show', compact('taskBlock', 'availableTasks'));
+        return view('task-blocks.show', compact(
+            'taskBlock',
+            'availableTasks',
+            'activeTasks',
+            'completedTasks'
+        ));
     }
 
     public function update(Request $request, TaskBlock $taskBlock)

@@ -106,7 +106,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Задачи блока</h3>
+        <h3 class="card-title">Активные задачи</h3>
     </div>
 
     <div class="card-body p-0">
@@ -121,7 +121,7 @@
             </thead>
 
             <tbody>
-                @forelse($taskBlock->tasks as $task)
+                @forelse($activeTasks as $task)
                 <tr>
                     <td>
                         {{ $task->title }}
@@ -173,6 +173,59 @@
             </tbody>
         </table>
     </div>
+    <div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            Завершённые задачи
+            <span class="badge badge-success">
+                {{ $completedTasks->count() }}
+            </span>
+        </h3>
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Задача</th>
+                    <th>Проект</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @forelse($completedTasks as $task)
+                    <tr>
+                        <td>
+                            {{ $task->parent?->title ?? 'Без родительской задачи' }}
+                            → {{ $task->title }}
+
+                            <small class="text-muted">
+                                #{{ $task->id }}
+                            </small>
+                        </td>
+
+                        <td>
+                            {{ $task->project?->title ?? 'Без проекта' }}
+                        </td>
+
+                        <td>
+                            <span class="badge badge-success">
+                                Выполнено
+                            </span>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            Завершённых задач пока нет.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
 </div>
 
 <form method="POST"
