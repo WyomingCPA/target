@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Task;
+use App\Models\TaskBlock;
 use App\Models\CoinTransaction;
 use App\Models\Smoke;
 use Illuminate\Support\Facades\DB;
@@ -46,6 +47,26 @@ class CoinService
                 'amount' => $amount,
                 'type' => 'earn',
                 'description' => 'Task reward',
+            ]);
+        });
+    }
+
+    /**
+     * Начислить коины за выполненную задачу
+     */
+    public function rewardForBlock(TaskBlock $task): void
+    {
+        DB::transaction(function () use ($task) {
+
+            $user = User::firstWhere('email', 'WyomingCPA@yandex.ru');
+
+            $user->increment('coins', 50);
+
+            CoinTransaction::create([
+                'user_id' => $user->id,
+                'amount' => 50,
+                'type' => 'earn',
+                'description' => 'Начисление за выполненный блок',
             ]);
         });
     }

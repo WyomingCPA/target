@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\TaskBlock;
 use Illuminate\Http\Request;
-
+use App\Services\CoinService;
 class TaskBlockController extends Controller
 {
     public function index()
@@ -119,5 +119,24 @@ class TaskBlockController extends Controller
         $taskBlock->tasks()->detach($task->id);
 
         return back()->with('success', 'Задача удалена из блока!');
+    }
+    public function close(TaskBlock $taskBlock, CoinService $coinService)
+    {
+        $taskBlock->update([
+            'is_closed' => true,
+            'closed_at' => now(),
+        ]);
+        $coinService->rewardForBlock($taskBlock);
+        return back()->with('success', 'Блок закрыт!');
+    }
+
+    public function reopen(TaskBlock $taskBlock)
+    {
+        $taskBlock->update([
+            'is_closed' => false,
+            'closed_at' => null,
+        ]);
+
+        return back()->with('success', 'Блок снова открыт!');
     }
 }
