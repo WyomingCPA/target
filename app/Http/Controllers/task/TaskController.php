@@ -165,7 +165,7 @@ class TaskController extends Controller
         $done  = $task->subtasks->where('status', 'done')->count();
 
         $progress = $total > 0 ? round(($done / $total) * 100) : 0;
-
+        
         return view('task.show', compact(
             'task',
             'progress',

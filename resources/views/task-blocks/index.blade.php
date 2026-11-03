@@ -127,7 +127,16 @@
                             </button>
                         </form>
                         @endif
+                        <form method="POST"
+                            action="{{ route('task-blocks.copy', $block) }}"
+                            class="d-inline"
+                            onsubmit="return confirm('Скопировать блок со всеми задачами?')">
+                            @csrf
 
+                            <button class="btn btn-sm btn-outline-secondary" title="Копировать блок">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

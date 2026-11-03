@@ -147,20 +147,30 @@
                     </td>
 
                     <td>
-                        <form method="POST"
-                            action="{{ route(
+                        <div class="d-flex align-items-center">
+                            <form method="POST" action="{{ route('task.toggle', $task->id) }}" class="mb-0 mr-1">
+                                @csrf
+                                <button type="submit"
+                                    class="btn btn-sm {{ $task->status === 'done' ? 'btn-success' : 'btn-outline-success' }}"
+                                    title="Выполнить задачу">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                            <form method="POST"
+                                action="{{ route(
                                       'task-blocks.tasks.detach',
                                       [$taskBlock, $task]
                                   ) }}"
-                            onsubmit="return confirm('Убрать задачу из блока?')">
-                            @csrf
-                            @method('DELETE')
+                                onsubmit="return confirm('Убрать задачу из блока?')" class="mb-0 mr-1">
+                                @csrf
+                                @method('DELETE')
 
-                            <button class="btn btn-outline-danger btn-sm"
-                                title="Убрать из блока">
-                                <i class="fas fa-unlink"></i>
-                            </button>
-                        </form>
+                                <button class="btn btn-outline-danger btn-sm"
+                                    title="Убрать из блока">
+                                    <i class="fas fa-unlink"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty
@@ -174,27 +184,27 @@
         </table>
     </div>
     <div class="card">
-    <div class="card-header">
-        <h3 class="card-title">
-            Завершённые задачи
-            <span class="badge badge-success">
-                {{ $completedTasks->count() }}
-            </span>
-        </h3>
-    </div>
+        <div class="card-header">
+            <h3 class="card-title">
+                Завершённые задачи
+                <span class="badge badge-success">
+                    {{ $completedTasks->count() }}
+                </span>
+            </h3>
+        </div>
 
-    <div class="card-body p-0">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Задача</th>
-                    <th>Проект</th>
-                    <th>Статус</th>
-                </tr>
-            </thead>
+        <div class="card-body p-0">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Задача</th>
+                        <th>Проект</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                @forelse($completedTasks as $task)
+                <tbody>
+                    @forelse($completedTasks as $task)
                     <tr>
                         <td>
                             {{ $task->parent?->title ?? 'Без родительской задачи' }}
@@ -215,17 +225,17 @@
                             </span>
                         </td>
                     </tr>
-                @empty
+                    @empty
                     <tr>
                         <td colspan="3" class="text-center text-muted">
                             Завершённых задач пока нет.
                         </td>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 </div>
 
 <form method="POST"

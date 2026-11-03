@@ -90,21 +90,11 @@ Route::group(['prefix' => 'task-blocks', 'middleware' => 'auth',], function () {
     Route::delete('/task-blocks/{taskBlock}', [TaskBlockController::class, 'destroy'])
         ->name('task-blocks.destroy');
 
-    Route::post('/task-blocks/{taskBlock}/tasks', [TaskBlockController::class, 'attachTasks'])
-        ->name('task-blocks.tasks.attach');
-
-    Route::delete('/task-blocks/{taskBlock}/tasks/{task}', [TaskBlockController::class, 'detachTask'])
-        ->name('task-blocks.tasks.detach');
-        
-    Route::post('/task-blocks/{taskBlock}/close', [
-        TaskBlockController::class,
-        'close'
-    ])->name('task-blocks.close');
-
-    Route::post('/task-blocks/{taskBlock}/reopen', [
-        TaskBlockController::class,
-        'reopen'
-    ])->name('task-blocks.reopen');
+    Route::post('/task-blocks/{taskBlock}/tasks', [TaskBlockController::class, 'attachTasks'])->name('task-blocks.tasks.attach');
+    Route::delete('/task-blocks/{taskBlock}/tasks/{task}', [TaskBlockController::class, 'detachTask'])->name('task-blocks.tasks.detach');
+    Route::post('/task-blocks/{taskBlock}/close', [TaskBlockController::class, 'close'])->name('task-blocks.close');
+    Route::post('/task-blocks/{taskBlock}/reopen', [ TaskBlockController::class, 'reopen'])->name('task-blocks.reopen');
+    Route::post('/task-blocks/{taskBlock}/copy', [TaskBlockController::class, 'copy'])->name('task-blocks.copy');
 });
 
 

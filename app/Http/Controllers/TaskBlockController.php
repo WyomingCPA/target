@@ -6,6 +6,9 @@ use App\Models\Task;
 use App\Models\TaskBlock;
 use Illuminate\Http\Request;
 use App\Services\CoinService;
+
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
 class TaskBlockController extends Controller
 {
     public function index()
@@ -138,5 +141,49 @@ class TaskBlockController extends Controller
         ]);
 
         return back()->with('success', 'Блок снова открыт!');
+    }
+    public function copy(TaskBlock $taskBlock, CoinService $coinService)
+    {
+        $newBlock = DB::transaction(function () use ($taskBlock, $coinService) {
+
+            // Копируем блок
+            $newBlock = $taskBlock->replicate();
+            $newBlock->title = $taskBlock->title . ' (копия)';
+
+            if (array_key_exists('status', $newBlock->getAttributes())) {
+                $newBlock->status = 'active';
+            }
+
+            $newBlock->save();
+
+            // Копируем задачи блока
+            foreach ($taskBlock->tasks as $task) {
+
+                $newTask = $task->replicate();
+
+                $newTask->status = 'todo';
+                $newTask->completed_at = null;
+                $newTask->coins_awarded = false;
+
+                $newTask->save();
+                $user = User::first(); // если один пользователь
+                $cost = 5;
+
+                $coinService->spend(
+                    user: $user,
+                    amount: $cost,
+                    description: 'Создание задачи',
+                    task: $task
+                );
+
+                $newTask->taskBlocks()->attach($newBlock->id);
+            }
+
+            return $newBlock;
+        });
+
+        return redirect()
+            ->route('task-blocks.show', $newBlock->id)
+            ->with('success', 'Блок успешно скопирован!');
     }
 }
