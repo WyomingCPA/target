@@ -9,15 +9,39 @@ use App\Services\CoinService;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+
 class TaskBlockController extends Controller
 {
     public function index()
     {
         $blocks = TaskBlock::withCount([
             'tasks',
+
             'tasks as completed_tasks_count' => function ($query) {
                 $query->where('status', 'done');
             },
+
+            'tasks as completed_today_count' => function ($query) {
+                $query->where('status', 'done')
+                    ->whereDate('completed_at', today());
+            },
+
+            'tasks as completed_week_count' => function ($query) {
+                $query->where('status', 'done')
+                    ->whereBetween('completed_at', [
+                        now()->startOfWeek(),
+                        now()->endOfWeek(),
+                    ]);
+            },
+
+            'tasks as completed_month_count' => function ($query) {
+                $query->where('status', 'done')
+                    ->whereBetween('completed_at', [
+                        now()->startOfMonth(),
+                        now()->endOfMonth(),
+                    ]);
+            },
+
         ])->orderBy('title')->get();
 
         return view('task-blocks.index', compact('blocks'));

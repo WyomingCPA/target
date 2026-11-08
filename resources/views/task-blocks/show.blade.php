@@ -3,6 +3,10 @@
 @section('title', $taskBlock->title)
 
 @section('content_header')
+<a href="{{ route('task-blocks.index') }}"
+    class="btn btn-default">
+    К списку блоков
+</a>
 <h1>{{ $taskBlock->title }}</h1>
 @stop
 

@@ -6,10 +6,14 @@
 
 @section('content')
 
+<div class="mb-3">
+    <a href="{{ route('task.main') }}" class="btn btn-default">
+        <i class="fas fa-arrow-left"></i> Вернуться к задачам
+    </a>
+</div>
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ $task->title }}</h3>
-
         <div class="card-tools">
             <a href="{{ route('task.edit', $task->id) }}"
                 class="btn btn-sm btn-warning">
