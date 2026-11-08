@@ -59,7 +59,7 @@ $showClosed = request()->boolean('show_closed');
             : 0;
             @endphp
 
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card card-outline {{ $block->is_closed ? 'card-secondary' : 'card-primary' }}">
 
                     <div class="card-header">
